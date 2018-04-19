@@ -1,0 +1,14 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "globals": {
+    "srcDir": true,
+    "sandbox": true,
+    "expect": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": "off",
+    "no-unused-expressions": "off"
+  }
+}
