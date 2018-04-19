@@ -1,5 +1,8 @@
-node_modules
+/node_modules/
 .DS_Store
 data
 .idea
 .env
+yarn-error.log
+/dist/
+.env/

@@ -1,0 +1,46 @@
+{
+  "name": "humanist-coin",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./src/oracleApi/services",
+    "test": "mocha -R spec ./test/test.config.js ./test/unit --recursive --timeout 15000",
+    "lint": "yarn lint:contract && yarn lint:app",
+    "lint:contract": "solhint src/contracts/**/*.sol",
+    "lint:app": "eslint . --ext .js"
+  },
+  "engines": {
+    "node": "8.11.x",
+    "npm": "5.5.x",
+    "yarn": "1.6.0"
+  },
+  "dependencies": {
+    "@koa/cors": "^2.2.1",
+    "@sendgrid/mail": "^6.2.1",
+    "assert": "^1.4.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "decimal.js": "^10.0.0",
+    "eslint": "^4.19.1",
+    "ethers": "^3.0.12",
+    "fs-extra": "^5.0.0",
+    "ganache-core": "^2.1.0",
+    "joi": "^13.1.2",
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-cache-control": "^2.0.0",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.5",
+    "mocha": "^5.1.0",
+    "moment": "^2.22.1",
+    "ngrok": "^3.0.1",
+    "npmlog": "^4.1.2",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "sinon": "^4.5.0",
+    "solc": "^0.4.21",
+    "solhint": "^1.1.10",
+    "uuid-random": "^1.0.6",
+    "web3": "^1.0.0-beta.34"
+  }
+}

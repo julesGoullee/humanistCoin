@@ -1,0 +1,411 @@
+[
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "count",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      },
+      {
+        "name": "_index",
+        "type": "uint256"
+      },
+      {
+        "name": "_newValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "modifyAsset",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "name": "validate",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      },
+      {
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "removeAsset",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getByIndex",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "name": "date",
+                "type": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256"
+              }
+            ],
+            "name": "assets",
+            "type": "tuple[]"
+          },
+          {
+            "name": "hash",
+            "type": "bytes32"
+          },
+          {
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "name": "birthday",
+            "type": "uint256"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "name": "validate",
+            "type": "bool"
+          }
+        ],
+        "name": "human",
+        "type": "tuple"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "name": "date",
+            "type": "uint256"
+          },
+          {
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "asset",
+        "type": "tuple"
+      }
+    ],
+    "name": "addAsset",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_consumer",
+        "type": "address"
+      }
+    ],
+    "name": "setConsumer",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_hash",
+        "type": "bytes32"
+      },
+      {
+        "name": "_addr",
+        "type": "address"
+      },
+      {
+        "name": "_birthday",
+        "type": "uint256"
+      },
+      {
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "add",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "humans",
+    "outputs": [
+      {
+        "name": "hash",
+        "type": "bytes32"
+      },
+      {
+        "name": "addr",
+        "type": "address"
+      },
+      {
+        "name": "birthday",
+        "type": "uint256"
+      },
+      {
+        "name": "createdAt",
+        "type": "uint256"
+      },
+      {
+        "name": "validate",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "consumer",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "humansIndex",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "name": "get",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "name": "date",
+                "type": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256"
+              }
+            ],
+            "name": "assets",
+            "type": "tuple[]"
+          },
+          {
+            "name": "hash",
+            "type": "bytes32"
+          },
+          {
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "name": "birthday",
+            "type": "uint256"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "name": "validate",
+            "type": "bool"
+          }
+        ],
+        "name": "human",
+        "type": "tuple"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "humanCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  }
+]
