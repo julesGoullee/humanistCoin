@@ -1,7 +1,7 @@
 const path = require('path');
+const moment = require('moment');
 
-const config = require(path.join(srcDir, '/oracleApi/config') );
-const Utils = require(path.join(srcDir, '/oracleApi/utils') );
+const config = require(path.join(srcDir, '/config') );
 const App = require(path.join(srcDir, '/oracleApi/services/api/app') );
 const apiClient = require(path.join(srcDir, '/apiClient') );
 const InterfaceValidator = require(path.join(srcDir, '/oracleApi/modules/validators/interface') );
@@ -11,9 +11,8 @@ describe('Api oracle', () => {
 
   beforeEach(async () => {
 
-    this.sandbox = sandbox.create();
+    this.sandbox = createSandbox();
 
-    this.stubSend = this.sandbox.stub(Utils, 'sendMailCode').resolves(true);
     await App.start();
 
   });
@@ -36,23 +35,33 @@ describe('Api oracle', () => {
 
   it('Should submit email', async () => {
 
-    const id = await apiClient.submission({
-      birthday: 0,
+    const resSubmit = await apiClient.submission({
+      birthday: moment().format(),
       email: 'email@email.com',
     }, 'address');
 
-    expect(id).to.be.a.string;
-    const code = this.stubSend.args[0][1];
+    expect(resSubmit.id).to.be.a.string;
 
-    const resStatusBefore = await apiClient.status(id);
-    expect(resStatusBefore.state).to.eq(InterfaceValidator.STATES().PENDING);
+    const resStatusBefore = await apiClient.status(resSubmit.id);
+    expect(resStatusBefore.status).to.eq(InterfaceValidator.STATUS().PENDING);
 
-    const resCallback = await apiClient.callbackEmail(code);
-    expect(resCallback).to.be.true;
+    const resCallback = await apiClient.callbackEmail('00000000-0000-0000-0000-000000000000');
+    expect(resCallback).to.deep.eq({
+      id: resSubmit.id,
+      contractValue: `${InterfaceValidator.STATUS().CONFIRMED}:email@email.com`,
+      address: 'address',
+      hash: 'email@email.com',
+      status: InterfaceValidator.STATUS().CONFIRMED
+    });
 
-    const resStatus = await apiClient.status(id);
-    expect(resStatus.state).to.eq(InterfaceValidator.STATES().CONFIRMED);
-    expect(resStatus.contractValue).to.eq(`${resStatus.state}:${resStatus.hash}`);
+    const resStatus = await apiClient.status(resSubmit.id);
+    expect(resStatus).to.deep.eq({
+      id: resSubmit.id,
+      contractValue: `${InterfaceValidator.STATUS().CONFIRMED}:email@email.com`,
+      address: 'address',
+      hash: 'email@email.com',
+      status: InterfaceValidator.STATUS().CONFIRMED
+    });
 
   });
 

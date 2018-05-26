@@ -1,8 +1,8 @@
-pragma solidity ^0.4.0;
-//pragma experimental "v0.5.0";
+pragma solidity ^0.4.2;
+pragma experimental "v0.5.0";
 pragma experimental "ABIEncoderV2";
 
-import "safeMath.sol";
+import "externals/safeMath.sol";
 import "Types.sol";
 
 

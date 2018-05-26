@@ -1,0 +1,11 @@
+{
+  "env": {
+    "NODE_ENV": "production",
+    "NODE_VERSION": "8.11.1",
+    "ENV": "production",
+    "NODE_URL": "https://ropsten.infura.io/mBkAOhJzJNhjBUNAoAVx",
+    "NODE_URL_WS": "wss://ropsten.infura.io/ws/mBkAOhJzJNhjBUNAoAVx",
+    "NETWORK": "ropsten",
+    "SENDGRID_API_KEY": "@humanist-coin-sendgrip-api-key"
+  }
+}

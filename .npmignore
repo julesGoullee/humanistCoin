@@ -1,0 +1,13 @@
+ethereum-bridge/
+src/oracleApi/dist
+src/webApp
+tools/
+
+/node_modules/
+.DS_Store
+.idea/
+.env
+yarn-error.log
+/dist/
+.env/
+temp/

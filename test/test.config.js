@@ -8,5 +8,6 @@ require(path.join(srcDir, '/oracleApi/modules/logger') );
 global.chai = require('chai');
 global.expect = global.chai.expect;
 global.chai.use(chaiAsPromised);
-global.sandbox = require('sinon').sandbox;
+global.createSandbox = require('sinon').createSandbox;
+
 

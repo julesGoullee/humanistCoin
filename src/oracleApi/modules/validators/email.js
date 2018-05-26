@@ -2,6 +2,7 @@ const uuid = require('uuid-random');
 const Joi = require('joi');
 const Utils = require('../../utils');
 const Validator = require('./interface');
+const config = require('../../config');
 
 class EmailValidator extends Validator {
 
@@ -20,7 +21,7 @@ class EmailValidator extends Validator {
       email: ctx.request.body.content.email,
     };
     const schema = {
-      birthday: Joi.number(),
+      birthday: Joi.date(),
       email: Joi.string().email(),
     };
 
@@ -49,10 +50,21 @@ class EmailValidator extends Validator {
 
   async submission(id, params){
 
-    const code = uuid();
+    let code = null;
+
+    if(!config.SENDGRID_API_KEY){
+
+      code = '00000000-0000-0000-0000-000000000000';
+
+    } else {
+
+      code = uuid();
+      await Utils.sendMailCode(params.content.email, code);
+
+    }
+
     this.db[code] = { id };
 
-    await Utils.sendMailCode(params.content.email, code);
     return params.content.email;
 
   }
@@ -61,9 +73,12 @@ class EmailValidator extends Validator {
 
     if(this.db[params.code]){
 
+      const id = this.db[params.code].id;
+      delete this.db[params.code];
+
       return {
-        id: this.db[params.code].id,
-        state: EmailValidator.STATES().CONFIRMED
+        id,
+        status: Validator.STATUS().CONFIRMED
       };
 
     }

@@ -1,5 +1,5 @@
 const ngrok = require('ngrok');
-const config = require('../src/oracleApi/config');
+const config = require('../src/config');
 
 const Tunnel = {
 

@@ -1,5 +1,6 @@
 const rp = require('request-promise');
-const config = require('./oracleApi/config');
+const config = require('./config');
+const Errors = require('./utils/errors');
 
 const ApiClient = {
 
@@ -19,9 +20,13 @@ const ApiClient = {
 
     } catch(error){
 
-      console.error(error.message);
+      if(error.statusCode >= 400 && error.statusCode < 500){
 
-      throw new Error('Api error');
+        Errors.throwError(error.error.message, error.error.meta, true);
+
+      }
+
+      Errors.throwError('server_error', { message: error.error || error.message });
 
     }
 

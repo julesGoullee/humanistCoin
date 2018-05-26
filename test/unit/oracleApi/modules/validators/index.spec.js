@@ -6,7 +6,7 @@ describe('Validators', () => {
 
   beforeEach( () => {
 
-    this.sandbox = sandbox.create();
+    this.sandbox = createSandbox();
 
   });
 

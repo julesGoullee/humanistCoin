@@ -1,3 +1,1 @@
-src/contracts/erc20.sol
-src/contracts/oraclizeAPI_0.5.sol
-src/contracts/stringUtils.sol
+src/contracts/externals

@@ -2,10 +2,10 @@ pragma solidity ^0.4.2;
 pragma experimental "v0.5.0";
 pragma experimental "ABIEncoderV2";
 
-import "safeMath.sol";
-import "IErc20.sol";
-import "oraclizeAPI_0.5.sol";
-import "stringUtils.sol";
+import "externals/safeMath.sol";
+import "externals/IErc20.sol";
+import "externals/oraclizeAPI_0.5.sol";
+import "externals/stringUtils.sol";
 import "Types.sol";
 import "IStore.sol";
 
@@ -23,7 +23,7 @@ contract Humanist is IErc20, usingOraclize {
   string public symbol;
   string public name;
   string internal apiUrl;
-  uint8 public esperance;
+  uint public esperance;
   uint8 public decimals;
   uint public minAmountAdd;
   uint public supply;
@@ -35,7 +35,6 @@ contract Humanist is IErc20, usingOraclize {
   event ValidateHuman(address indexed addr, bool success);
   event Transfer(address indexed from, address indexed to, uint tokens);
 
-  /* solhint-disable */
   // ------------------------------------------------------------------------
   // Constructor
   // ------------------------------------------------------------------------
@@ -44,7 +43,7 @@ contract Humanist is IErc20, usingOraclize {
     bool _verify,
     address _store,
     string _apiUrl,
-    address _oraclize) public { // solhint-disable-line
+    address _oraclize) public {
 
     if (_oraclize != parseAddr("0x0000000000000000000000000000000000000000")) {
 
@@ -57,14 +56,13 @@ contract Humanist is IErc20, usingOraclize {
     decimals = 18;
     minAmountAdd = 100000000000000000; // 0.1 ether
     blockTime = 5;
-    esperance = 100;
+    esperance = _esperance;
     supply = 1 * 10**uint(decimals);
     symbol = "HMT";
     name = "Humanist";
     store = StoreInterface(_store);
 
   }
-  /* solhint-enable */
 
   // ------------------------------------------------------------------------
   // Don't accept ETH
@@ -296,7 +294,7 @@ contract Humanist is IErc20, usingOraclize {
   function getLifeRemind(uint _date) internal view returns (uint timeRemind) {
 
     uint old = getLifeTime(_date);
-    return uint(esperance).sub(old);
+    return esperance.sub(old);
 
   }
 

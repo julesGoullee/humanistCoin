@@ -1,5 +1,6 @@
 const path = require('path');
 
+const config = require(path.join(srcDir, '/oracleApi/config') );
 const InterfaceValidator = require(path.join(srcDir, '/oracleApi/modules/validators/interface') );
 const EmailValidator = require(path.join(srcDir, '/oracleApi/modules/validators/email') );
 const Utils = require(path.join(srcDir, '/oracleApi/utils') );
@@ -8,8 +9,7 @@ describe('Validator: email', () => {
 
   beforeEach(() => {
 
-    this.sandbox = sandbox.create();
-    this.stubSend = this.sandbox.stub(Utils, 'sendMailCode').resolves(true);
+    this.sandbox = createSandbox();
     this.emailValidator = new EmailValidator();
 
   });
@@ -27,12 +27,38 @@ describe('Validator: email', () => {
 
   });
 
-  it('Should send', async () => {
+  it('Should submit without mail key', async () => {
 
     const res = await this.emailValidator.submission('id', { content: { email: 'email@email.com' } });
     expect(res).to.eq('email@email.com');
-    expect(this.stubSend.args[0][0]).to.eq('email@email.com');
-    expect(this.emailValidator.db[this.stubSend.args[0][1]].id).to.eq('id');
+    expect(this.emailValidator.db['00000000-0000-0000-0000-000000000000'].id).to.eq('id');
+
+  });
+
+  describe('With email key', () => {
+
+    beforeEach( () => {
+
+      this.oldSendgridApiKey = config.SENDGRID_API_KEY;
+      config.SENDGRID_API_KEY = 'SENDGRID_API_KEY';
+      this.stubSendMailCode = this.sandbox.stub(Utils, 'sendMailCode').resolves(true);
+
+    });
+
+    afterEach( () => {
+
+      config.SENDGRID_API_KEY = this.oldSendgridApiKey;
+
+    });
+
+    it('Should submit with mail key', async () => {
+
+      const res = await this.emailValidator.submission('id', { content: { email: 'email@email.com' } });
+      expect(res).to.eq('email@email.com');
+      expect(this.stubSendMailCode.args[0][0]).to.eq('email@email.com');
+      expect(this.emailValidator.db[this.stubSendMailCode.args[0][1]].id).to.eq('id');
+
+    });
 
   });
 
@@ -44,14 +70,14 @@ describe('Validator: email', () => {
 
   });
 
-  it('Should call callback and return state validate', async () => {
+  it('Should call callback and return status validate', async () => {
 
     await this.emailValidator.submission('id', { content: { email: 'email@email.com' } });
-    const code = this.stubSend.args[0][1];
 
-    const res = await this.emailValidator.callback({ code });
+    const res = await this.emailValidator.callback({ code: '00000000-0000-0000-0000-000000000000' });
     expect(res.id).to.eq('id');
-    expect(res.state).to.eq(InterfaceValidator.STATES().CONFIRMED);
+    expect(res.status).to.eq(InterfaceValidator.STATUS().CONFIRMED);
+    expect(this.emailValidator.db['00000000-0000-0000-0000-000000000000']).to.be.undefined;
 
   });
 
