@@ -87,7 +87,7 @@ contract Humanist is IErc20, usingOraclize {
 
     Types.Human memory human = store.get(addr);
 
-    require(keccak256(hash.toString()) == human.hash);
+    require(keccak256(abi.encodePacked(hash.toString())) == human.hash);
 
     bool isValid = state.equals("CONFIRMED".toSlice());
 
@@ -146,7 +146,7 @@ contract Humanist is IErc20, usingOraclize {
     string _email,
     string _id) public payable returns (bool success) {
 
-    bytes32 hash = keccak256(_email);
+    bytes32 hash = keccak256(abi.encodePacked(_email));
 
     require(humanExist(hash) == false);
 
