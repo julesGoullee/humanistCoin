@@ -1,13 +1,14 @@
+require('dotenv').config();
 const Web3 = require('web3');
 
-const config = require('../src/oracleApi/config');
+const config = require('../src/config');
 const Tunnel = require('./httpTunnel');
 const Utils = require('../src/utils');
 const Node = require('./node');
 const Humanist = require('../src/humanist');
 const EthWallet = require('../src/ethWallet');
 const App = require('../src/oracleApi/services/api/app');
-const StateWatcher = require('../src/oracleApi/services/blockchains/stateWatcher');
+const StatusWatcher = require('../src/oracleApi/services/blockchains/statusWatcher');
 const OraclizeBridge = require('./oraclizeBridge');
 const ContractUtils = require('./contract');
 const moment = require('moment');
@@ -52,8 +53,9 @@ const moment = require('moment');
     const oraclizeAddress = await oraclizeBridge.start();
     const urlTunnel = await Tunnel.start();
 
+    const esperance = parseInt(moment.duration(84, 'years').asSeconds() / 5, 10);
     const params = [
-      100,
+      esperance,
       true,
       contractStore.address,
       urlTunnel,
@@ -64,12 +66,12 @@ const moment = require('moment');
       address: contractTypes.address
     }] );
 
-    await StateWatcher.start();
+    await StatusWatcher.start();
     await App.start();
 
     process.on('SIGTERM', async () => {
 
-      await StateWatcher.stop();
+      await StatusWatcher.stop();
       await App.stop();
       await oraclizeBridge.stop();
       await Tunnel.stop();
@@ -78,7 +80,7 @@ const moment = require('moment');
 
   } else {
 
-    const esperance = parseInt(moment.duration(84, 'years').seconds() / 5, 10);
+    const esperance = parseInt(moment.duration(84, 'years').asSeconds() / 5, 10);
     const params = [
       esperance,
       false,
@@ -128,6 +130,13 @@ const moment = require('moment');
   await ethWallet2.open();
   await faucetEthWallet.send(ethWallet2.data.address, '1');
 
+  const ethWallet3 = new EthWallet({
+    // 0x80bd84f366Ce8a5c3005D3176a200Cb86c47b635
+    privateKey: '0x6178070da216695c2c998ae3090b097f366a9e1dfeede89188957c410d107097'
+  });
+  await ethWallet3.open();
+  await faucetEthWallet.send(ethWallet3.data.address, '1');
+
   if(!config.RUN.VERIFY){
 
     await humanist.add({
@@ -148,6 +157,7 @@ const moment = require('moment');
   console.log('humanist', ethWallet.data);
   console.log('humanist1', ethWallet1.data);
   console.log('wallet without humanist', ethWallet2.data);
+  console.log('wallet without humanist', ethWallet3.data);
   console.log('started');
 
 })().catch(error => console.error(error) );

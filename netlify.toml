@@ -1,0 +1,4 @@
+[build]
+  base    = "src/webApp"
+  publish = "src/webApp/dist"
+  command = "yarn build"

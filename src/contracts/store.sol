@@ -2,9 +2,9 @@ pragma solidity ^0.4.2;
 pragma experimental "v0.5.0";
 pragma experimental "ABIEncoderV2";
 
-import "safeMath.sol";
+import "externals/safeMath.sol";
+import "externals/Ownable.sol";
 import "Types.sol";
-import "Ownable.sol";
 
 
 contract Store is Ownable {
@@ -16,7 +16,6 @@ contract Store is Ownable {
   uint public humanCount;
   address public consumer;
 
-  /* solhint-disable */
   // ------------------------------------------------------------------------
   // Constructor
   // ------------------------------------------------------------------------
@@ -25,7 +24,6 @@ contract Store is Ownable {
     humanCount = 0;
 
   }
-  /* solhint-enable */
 
   modifier onlyConsumer () {
 

@@ -6,7 +6,8 @@ describe('Validator interface', () => {
 
   beforeEach(() => {
 
-    this.sandbox = sandbox.create();
+    this.sandbox = createSandbox();
+
   });
 
   afterEach(() => {
@@ -24,7 +25,7 @@ describe('Validator interface', () => {
 
     await Promise.all(methodsAsync.map(async method => await expect(validator[method]())
       .to.be.rejectedWith(Error, 'not_implemented')));
-    expect(Validator.STATES).to.exist;
+    expect(Validator.STATUS).to.exist;
     methodsSync.forEach(method => expect(validator[method]).to.throw(Error, 'not_implemented'));
     methodsStaticSync.forEach(method => expect(Validator[method]).to.throw(Error, 'not_implemented'));
 

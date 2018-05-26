@@ -1,20 +1,20 @@
-const throwError = (code, meta, expose) => {
+const config = require('../config');
+
+const createCustom = (code, meta, expose) => {
 
   const errorCustom = getError(code);
 
   if(!errorCustom){
 
-    const error = new Error('unknown_error_code');
+    const error = new Error('unknown_error');
 
     error.status = ERRORS.unknown_error.status;
-    error.meta = Object.assign({
-      meta: { code }
-    }, meta);
+    error.meta = Object.assign({ code }, meta);
 
-    throw error;
+
+    return error;
 
   }
-
 
   const error = new Error(code);
   error.isCustom = true;
@@ -28,7 +28,13 @@ const throwError = (code, meta, expose) => {
 
   }
 
-  throw error;
+  return error;
+
+};
+
+const throwError = (code, meta, expose) => {
+
+  throw createCustom(code, meta, expose);
 
 };
 
@@ -55,6 +61,57 @@ function assert(condition, message, meta, expose) {
   }
 
 }
+
+const displayError = (error) => {
+
+  const errorCustom = getError(error.message);
+
+  if(config.ENV !== 'production' || !errorCustom){
+
+    console.error(Object.assign({}, error), error);
+
+  }
+
+  if(!errorCustom){
+
+    return ERRORS.unknown_error.description;
+
+  } else {
+
+    let content = errorCustom.description;
+
+    if(error.meta && error.expose){
+
+      if(Array.isArray(error.meta) ){
+
+        content += ':';
+
+        error.meta.forEach( (item) => {
+
+          content += ` ${item}`;
+
+        });
+
+      } else {
+
+        content += Object.keys(error.meta).reduce( (acc, prop) => {
+
+          acc += ` ${prop}: ${JSON.stringify(error.meta[prop])}`;
+
+          return acc;
+
+        }, '');
+
+      }
+
+
+    }
+
+    return content;
+
+  }
+
+};
 
 const ERRORS = {
   unknown_error: {
@@ -96,11 +153,46 @@ const ERRORS = {
   bad_credentials: {
     status: 401,
     description: 'Bad credentials',
+  },
+
+  entry_not_found: {
+    status: 400,
+    description: 'Cannot find entry in db',
+  },
+
+  response_error: {
+    description: 'Request error',
+  },
+  unknown_blockchain_error: {
+    description: 'Unknown blockchain error',
+  },
+  server_error: {
+    description: 'Server error',
+  },
+  humanist_already_exist: {
+    description: 'Humanist already exist',
+  },
+  node_connection_error: {
+    description: 'Node connection error',
+  },
+  invalid_submission_status: {
+    description: 'Invalid submission status',
+  },
+  tx_failed_humanist_already_exist_or_unknown: {
+    description: 'Tx failed humanist already exist or unknown error',
+  },
+  not_enough_balance: {
+    description: 'Not enough balance',
+  },
+  insufficient_fund: {
+    description: 'Insufficient fund',
   }
 };
 
 module.exports = {
+  createCustom,
   throwError,
+  displayError,
   assert,
   ERRORS,
 };

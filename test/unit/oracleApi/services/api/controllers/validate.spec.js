@@ -7,7 +7,7 @@ describe('Controller: validate', () => {
 
   beforeEach( () => {
 
-    this.sandbox = sandbox.create();
+    this.sandbox = createSandbox();
     this.stubValidatorSend = this.sandbox.stub(ValidatorController.validator, 'submission');
     this.stubValidatorCallback = this.sandbox.stub(ValidatorController.validator, 'callback');
     this.stubDbAdd = this.sandbox.stub(Db, 'add');
@@ -23,26 +23,33 @@ describe('Controller: validate', () => {
 
   it('Should send submission', async () => {
 
-    this.stubValidatorSend.resolves(true);
+    this.stubValidatorSend.resolves('hash');
     const params = {
-      address: 'address'
+      address: 'address',
+      content: 'content'
     };
     const res = await ValidatorController.submission(params);
     const id = this.stubValidatorSend.args[0][0];
     expect(id).to.be.a.string;
-    expect(res).to.eq(id);
+
+    expect(res).to.deep.eq({
+      id,
+      address: 'address',
+      status: ValidatorController.Validator.STATUS().PENDING,
+      hash: 'hash',
+      contractValue: `${ValidatorController.Validator.STATUS().PENDING}:hash`
+    });
+
     expect(this.stubValidatorSend.args[0][1]).to.deep.eq(params);
 
     expect(this.stubDbAdd.calledOnce).to.be.true;
 
-    expect(this.stubDbAdd.args[0][1]).to.exist;
-    expect(this.stubDbAdd.args[0][1].data).to.exist;
-    expect(this.stubDbAdd.args[0][1].address).to.exist;
-    expect(this.stubDbAdd.args[0][1].id).to.eq(res);
-    expect(this.stubDbAdd.args[0][1].hash).to.eq(true);
-    expect(this.stubDbAdd.args[0][1].state).to.eq(ValidatorController.Validator.STATES().PENDING);
-    expect(this.stubDbAdd.args[0][1].contractValue).to.exist;
-    expect(this.stubDbAdd.args[0][1].contractValue).to.eq(`${this.stubDbAdd.args[0][1].state}:true`);
+    expect(this.stubDbAdd.args[0][1].content).to.eq('content');
+    expect(this.stubDbAdd.args[0][1].address).to.eq('address');
+    expect(this.stubDbAdd.args[0][1].id).to.eq(id);
+    expect(this.stubDbAdd.args[0][1].hash).to.eq('hash');
+    expect(this.stubDbAdd.args[0][1].status).to.eq(ValidatorController.Validator.STATUS().PENDING);
+    expect(this.stubDbAdd.args[0][1].contractValue).to.eq(`${this.stubDbAdd.args[0][1].status}:hash`);
 
   });
 
@@ -56,10 +63,9 @@ describe('Controller: validate', () => {
 
   it('Should get status', () => {
 
-    this.stubValidatorSend.resolves(true);
-    this.stubDbGet.returns('content');
+    this.stubDbGet.returns({ id: 'id '});
 
-    expect(ValidatorController.status('id') ).to.eq('content');
+    expect(ValidatorController.status('id') ).to.deep.eq({ id: 'id '});
     expect(this.stubDbGet.calledWith('id') ).to.be.true;
 
   });
@@ -67,22 +73,22 @@ describe('Controller: validate', () => {
   it('Should validateCallback', () => {
 
     const stubSubmission = {
-      state:  ValidatorController.Validator.STATES().PENDING,
+      status:  ValidatorController.Validator.STATUS().PENDING,
       hash: 'hash'
     };
     this.stubDbGet.returns(stubSubmission);
     this.stubValidatorCallback.returns({
-      state: ValidatorController.Validator.STATES().CONFIRMED,
+      status: ValidatorController.Validator.STATUS().CONFIRMED,
       id: 'id'
     });
     const resCallback = ValidatorController.callback('id');
-    expect(resCallback).to.be.true;
+    expect(resCallback).to.be.deep.eq(stubSubmission);
 
     expect(this.stubValidatorCallback.calledWith('id') ).to.be.true;
     expect(this.stubDbGet.calledWith('id') ).to.be.true;
 
-    expect(stubSubmission.state).to.eq(ValidatorController.Validator.STATES().CONFIRMED);
-    expect(stubSubmission.contractValue).to.eq(`${stubSubmission.state}:hash`);
+    expect(stubSubmission.status).to.eq(ValidatorController.Validator.STATUS().CONFIRMED);
+    expect(stubSubmission.contractValue).to.eq(`${stubSubmission.status}:hash`);
 
   });
 
@@ -102,25 +108,38 @@ describe('Controller: validate', () => {
 
   });
 
-  it('Should do nothing if validateCallback state is same', () => {
+  it('Should do nothing if validateCallback status is same', () => {
 
     const stubSubmission = {
-      state:  ValidatorController.Validator.STATES().PENDING,
+      status:  ValidatorController.Validator.STATUS().PENDING,
       hash: 'hash',
       contractValue: 'contractValue'
     };
 
     this.stubValidatorCallback.returns({
-      state: ValidatorController.Validator.STATES().PENDING,
+      status: ValidatorController.Validator.STATUS().PENDING,
       id: 'id'
     });
 
     this.stubDbGet.returns(stubSubmission);
 
     const res = ValidatorController.callback('id');
-    expect(stubSubmission.state).to.eq(ValidatorController.Validator.STATES().PENDING);
+    expect(stubSubmission.status).to.eq(ValidatorController.Validator.STATUS().PENDING);
     expect(stubSubmission.contractValue).to.eq('contractValue');
-    expect(res).to.be.true;
+    expect(res).to.be.deep.eq(stubSubmission);
+
+  });
+
+  it('Should filter submission', () => {
+
+    const submission = {
+      content: 'content',
+      id: 'id'
+    };
+    const res = ValidatorController._filterSubmission(submission);
+    expect(res.id).to.eq(submission.id);
+    expect(submission.content).to.exist;
+    expect(res.content).not.to.exist;
 
   });
 

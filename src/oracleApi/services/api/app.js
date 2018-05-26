@@ -5,11 +5,11 @@ const bodyParser = require('koa-bodyparser');
 const router = require('koa-router')();
 const Joi = require('joi');
 
-const config = require('../../config');
+const config = require('../../../config');
 const Utils = require('../../utils');
 const log = require('npmlog');
 const ValidatorController = require('./controllers/validate');
-const Errors = require('../../modules/errors');
+const Errors = require('../../../utils/errors');
 
 async function logger(ctx, next){
 

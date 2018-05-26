@@ -1,4 +1,4 @@
-const Errors = require('./errors');
+const Errors = require('../../utils/errors');
 
 const Db = {
 
@@ -23,7 +23,7 @@ const Db = {
 
     if(!id){
 
-      Errors.throwError('Cannot find entry', { prop, value });
+      Errors.throwError('entry_not_found', { prop, value });
 
     }
 

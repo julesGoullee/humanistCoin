@@ -4,12 +4,13 @@ const Web3 = require('web3');
 const EthWallet = require(path.join(srcDir, '/ethWallet') );
 const ContractUtils = require(path.join(srcDir, '../tools/contract') );
 const Node = require(path.join(srcDir, '../tools/node') );
+const Utils = require(path.join(srcDir, '/utils') );
 
 describe('EthWallet', () => {
 
   beforeEach( async () => {
 
-    this.sandbox = sandbox.create();
+    this.sandbox = createSandbox();
 
   });
 
@@ -22,7 +23,6 @@ describe('EthWallet', () => {
   it('Should generateKeyPair', () => {
 
     const keyPair = EthWallet.generateKeypair();
-    console.log(keyPair.privateKey);
     expect(keyPair.privateKey).to.exist;
     expect(keyPair.publicKey).to.exist;
     expect(keyPair.address).to.exist;
@@ -44,6 +44,35 @@ describe('EthWallet', () => {
   it('Cannot create before init', () => {
 
     expect(() => new EthWallet() ).to.throw('node_not_initialize');
+
+  });
+
+  it('Should validate amount', () => {
+
+    expect(EthWallet.isValidAmount('1')
+    ).to.be.true;
+    expect(EthWallet.isValidAmount('1.1')
+    ).to.be.true;
+    expect(EthWallet.isValidAmount('a')
+    ).to.be.false;
+    expect(EthWallet.isValidAmount('1,1')
+    ).to.be.false;
+  });
+
+  it('Should validate address', () => {
+
+    expect(EthWallet.isValidAddress('0xf10B792aBDCaE52e149C32405Bd7658fc6236536')
+    ).to.be.true;
+    expect(EthWallet.isValidAddress('0xf10B792aBDCaE52e149C32405Bd7658fc6236537')
+    ).to.be.false;
+    expect(EthWallet.isValidAddress('a')
+    ).to.be.false;
+  });
+
+  it('Should check tx isMined', () => {
+
+    expect(EthWallet.isMined({ status: 1 }) ).to.be.true;
+    expect(EthWallet.isMined({ status: 0 }) ).to.be.false;
 
   });
 
@@ -70,10 +99,18 @@ describe('EthWallet', () => {
       await this.node.start();
     });
 
+    afterEach( async () => {
+
+      await this.node.stop();
+
+    });
+
     it('Should init and close node', async () => {
 
       expect(EthWallet.providerWeb3).not.to.exist;
+      expect(EthWallet.providerWeb3Ws).not.to.exist;
       expect(EthWallet.web3).not.to.exist;
+      expect(EthWallet.web3Ws).not.to.exist;
       expect(EthWallet.providerEthers).not.to.exist;
       expect(EthWallet.initialize).to.be.false;
       await EthWallet.initNode();
@@ -83,7 +120,9 @@ describe('EthWallet', () => {
       expect(EthWallet.initialize).to.be.true;
       await EthWallet.closeNode();
       expect(EthWallet.providerWeb3).not.to.exist;
+      expect(EthWallet.providerWeb3Ws).not.to.exist;
       expect(EthWallet.web3).not.to.exist;
+      expect(EthWallet.web3Ws).not.to.exist;
       expect(EthWallet.providerEthers).not.to.exist;
       expect(EthWallet.initialize).to.be.false;
 
@@ -101,6 +140,23 @@ describe('EthWallet', () => {
 
       });
 
+      afterEach( async () => {
+
+        await EthWallet.closeNode();
+
+      });
+
+      it('Should wait tx', async () => {
+
+        const stubUtilsWaitTx = this.sandbox.stub(Utils, 'waitTx').resolves('receipt');
+        const receipt = await this.ethWalletOwner.waitMined({ hash: 'hash'});
+        expect(receipt).to.eq('receipt');
+        expect(stubUtilsWaitTx.calledOnce).to.be.true;
+        expect(stubUtilsWaitTx.args[0][0]).to.eq('hash');
+        expect(stubUtilsWaitTx.args[0][1]).to.eq(this.ethWalletOwner.walletClient.provider);
+
+      });
+
       it('Should send', async () => {
 
         await this.faucetEthWallet.send(this.ethWalletOwner.data.address, '1');
@@ -108,6 +164,24 @@ describe('EthWallet', () => {
 
         expect(balance).to.eq('1.0');
 
+      });
+
+      it('Should mine', async () => {
+
+        const blockNumber = await EthWallet.providerEthers.getBlockNumber();
+        const res = await EthWallet.mine();
+
+        expect(res).to.be.true;
+        const blockNumber1 = await EthWallet.providerEthers.getBlockNumber();
+
+        expect(blockNumber1).to.eq(blockNumber + 1);
+
+        const res1 = await EthWallet.mine();
+
+        expect(res1).to.be.true;
+        const blockNumber2 = await EthWallet.providerEthers.getBlockNumber();
+
+        expect(blockNumber2).to.eq(blockNumber1 + 1);
       });
 
       describe('With ethWalletOwner with amount', async () => {
@@ -146,7 +220,7 @@ describe('EthWallet', () => {
 
           const params = [
             100,
-            false,
+            true,
             this.contractStore.address,
             'not-working-url',
             '0x0000000000000000000000000000000000000000'
@@ -160,12 +234,6 @@ describe('EthWallet', () => {
         });
 
       });
-
-    });
-
-    afterEach( async () => {
-
-      await this.node.stop();
 
     });
 

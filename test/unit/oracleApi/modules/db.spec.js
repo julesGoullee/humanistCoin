@@ -1,13 +1,13 @@
 const path = require('path');
 
 const Db = require(path.join(srcDir, '/oracleApi/modules/db') );
-const Errors = require(path.join(srcDir, '/oracleApi/modules/errors') );
+const Errors = require(path.join(srcDir, '/utils/errors') );
 
 describe('Db', () => {
 
   beforeEach( () => {
 
-    this.sandbox = sandbox.create();
+    this.sandbox = createSandbox();
 
   });
 
@@ -53,11 +53,7 @@ describe('Db', () => {
   it('Cannot remove not found entry', () => {
 
     Db.add('id', {  prop: 'content' });
-
-    const stubError = this.sandbox.stub(Errors, 'throwError');
-    Db.removeByProp('prop', 'content1');
-
-    expect(stubError.calledOnce).to.be.true;
+    expect(() => Db.removeByProp('prop', 'content1') ).to.throw(Error, 'entry_not_found');
 
   });
 

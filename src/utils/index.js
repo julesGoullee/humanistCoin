@@ -39,6 +39,45 @@ const Utils = {
 
   },
 
+  async waitTx(hash, provider){
+
+    let receipt = await provider.getTransactionReceipt(hash);
+
+    if(!receipt){
+
+      try {
+
+        await provider.waitForTransaction(hash, 9 * 60 * 1000);
+
+        receipt = await provider.getTransactionReceipt(hash);
+
+      } catch(error){
+
+        if(error.message === 'timeout'){
+
+          console.log('wait timeout');
+          return false;
+
+        } else if(error.message.includes('CONNECTION ERROR') ){
+
+          console.warn('wait tx disconnect retry...');
+          console.error(error);
+          return Utils.waitTx(hash, provider);
+
+        } else {
+
+          throw error;
+
+        }
+
+      }
+
+    }
+
+    return receipt;
+
+  }
+
 };
 
 module.exports = Utils;

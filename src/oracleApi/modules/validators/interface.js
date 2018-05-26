@@ -1,7 +1,7 @@
 
 class Validator {
 
-  static STATES(){
+  static STATUS(){
 
     return {
       PENDING: 'PENDING',

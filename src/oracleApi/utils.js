@@ -5,7 +5,7 @@ const CommonUtils = require('../utils');
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
-const Errors = require('./modules/errors');
+const Errors = require('../utils/errors');
 
 const Utils = Object.assign({}, CommonUtils, {
 

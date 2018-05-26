@@ -1,10 +1,10 @@
 const uuid = require('uuid-random');
 const log = require('npmlog');
 
-const config = require('../../../config');
+const config = require('../../../../config');
 const Db = require('../../../modules/db');
 const Validators = require('../../../modules/validators');
-const Errors = require('../../../modules/errors');
+const Errors = require('../../../../utils/errors');
 
 const ValidatorController = {
 
@@ -16,19 +16,21 @@ const ValidatorController = {
     const id = uuid();
 
     const hash = await this.validator.submission(id, params);
-    const state = Validators.interface.STATES().PENDING;
-    const contractValue = `${state}:${hash}`;
+    const status = Validators.interface.STATUS().PENDING;
+    const contractValue = `${status}:${hash}`;
 
-    Db.add(id, {
-      data: params,
+    const submission = {
+      content: params.content,
       id,
       address: params.address,
-      state,
+      status,
       hash,
       contractValue
-    });
+    };
 
-    return id;
+    Db.add(id, submission);
+
+    return ValidatorController._filterSubmission(submission);
 
   },
 
@@ -37,7 +39,7 @@ const ValidatorController = {
     const submission = Db.get(id);
     Errors.assert(submission, 'unknown_id', { id }, true);
 
-    return submission;
+    return ValidatorController._filterSubmission(submission);
 
   },
 
@@ -49,20 +51,28 @@ const ValidatorController = {
     const submission = Db.get(res.id);
     Errors.assert(submission, 'unknown_id', { params, id: res.id }, true);
 
-    if(res.state !== submission.state){
+    if(res.status !== submission.status){
 
       log.info('validate', {
         id: res.id,
-        state: submission.state,
-        updateState: res.state
+        status: submission.status,
+        updateState: res.status
       });
 
-      submission.state = res.state;
-      submission.contractValue =  `${submission.state}:${submission.hash}`;
+      submission.status = res.status;
+      submission.contractValue =  `${submission.status}:${submission.hash}`;
 
     }
 
-    return true;
+    return ValidatorController._filterSubmission(submission);
+
+  },
+
+  _filterSubmission(submission){
+
+    const res = Object.assign({}, submission);
+    delete res.content;
+    return res;
 
   }
 

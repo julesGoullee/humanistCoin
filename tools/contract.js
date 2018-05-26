@@ -5,7 +5,7 @@ const Ethers = require('ethers');
 const solcLoader = require('solc');
 const linker = require('solc/linker');
 const solc = solcLoader.setupMethods(require('./soljson-nightly.js') );
-const Utils = require('../src/oracleApi/utils');
+const Utils = require('../src/utils');
 
 const ContractUtils = {
 
@@ -66,6 +66,9 @@ const ContractUtils = {
       ...args
     );
 
+    const constructorEncoded = deployTransaction.data.split(contractCompiled.bytecode)[1];
+    console.log(name, 'constructorEncoded', constructorEncoded);
+
     if(contractInterface.length > 0){
 
       const pathInterface = path.join(__dirname, `../src/contracts/${name}.interface.json`);
@@ -79,9 +82,8 @@ const ContractUtils = {
       gasLimit: 4000000
     });
 
-    // await ethWallet.constructor.providerEthers.waitForTransaction(tx.hash);
-
-    const receipt = await ethWallet.constructor.web3.eth.getTransactionReceipt(tx.hash);
+    await Utils.waitTx(tx.hash, ethWallet.constructor.providerEthers);
+    const receipt = await ethWallet.constructor.providerEthers.getTransactionReceipt(tx.hash);
 
     return new Ethers.Contract(receipt.contractAddress, contractInterface, ethWallet.walletClient);
 
