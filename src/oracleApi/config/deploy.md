@@ -15,5 +15,5 @@ now ls humanist-coin
 
 Update dns:
 ``` bash
-now alias humanist-coin-vodmiadbpo.now.sh api.humanist.network
+now alias humanist-coin-gyebiuxfeq.now.sh api.humanist.network
 ```

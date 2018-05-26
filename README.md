@@ -15,9 +15,9 @@ move event in store contract
 
 humanist contract constructor args:
 ```
-530150400
-true
-0xaa15cCb387E2140E0baEfC8a961151F8F55D71b9
-https://humanist.network
-0x0000000000000000000000000000000000000000
+530150400,
+true,
+"0xaa15cCb387E2140E0baEfC8a961151F8F55D71b9",
+"https://api.humanist.network",
+"0x0000000000000000000000000000000000000000"
 ```

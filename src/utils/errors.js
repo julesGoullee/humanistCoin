@@ -186,6 +186,9 @@ const ERRORS = {
   },
   insufficient_fund: {
     description: 'Insufficient fund',
+  },
+  insufficient_fund_eth: {
+    description: 'Insufficient fund eth',
   }
 };
 
