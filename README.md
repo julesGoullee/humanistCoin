@@ -10,9 +10,6 @@ CONTRACT_TYPES_ADDRESS=0x5C23Ca684EBD4699C89679D4CB780cfC4164AA57
 CONTRACT_STORE_ADDRESS=0xaa15cCb387E2140E0baEfC8a961151F8F55D71b9
 CONTRACT_ADDRESS=0x276386DB58bA9dcC2C20f68508036562fe93eD14
 
-order tx
-move event in store contract
-
 humanist contract constructor args:
 ```
 530150400,
@@ -21,3 +18,16 @@ true,
 "https://api.humanist.network",
 "0x0000000000000000000000000000000000000000"
 ```
+
+
+#TODO:
+
+move event in store contract
+verify contract
+check address on added
+mailchimp
+catch send unkown account
+0x private key
+ga action
+service worker disable localhost
+

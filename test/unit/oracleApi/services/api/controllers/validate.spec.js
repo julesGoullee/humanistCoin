@@ -1,7 +1,9 @@
 const path = require('path');
+const moment = require('moment');
 
 const ValidatorController = require(path.join(srcDir, '/oracleApi/services/api/controllers/validate') );
 const Db = require(path.join(srcDir, '/oracleApi/modules/db') );
+const Mail = require(path.join(srcDir, '/oracleApi/modules/mail') );
 
 describe('Controller: validate', () => {
 
@@ -12,6 +14,7 @@ describe('Controller: validate', () => {
     this.stubValidatorCallback = this.sandbox.stub(ValidatorController.validator, 'callback');
     this.stubDbAdd = this.sandbox.stub(Db, 'add');
     this.stubDbGet = this.sandbox.stub(Db, 'get');
+    this.stubMailAdd = this.sandbox.stub(Mail, 'add');
 
   });
 
@@ -73,6 +76,10 @@ describe('Controller: validate', () => {
   it('Should validateCallback', () => {
 
     const stubSubmission = {
+      content: {
+        email: 'ahleldz@gmail.com',
+        birthday: moment().format()
+      },
       status:  ValidatorController.Validator.STATUS().PENDING,
       hash: 'hash'
     };
@@ -81,11 +88,20 @@ describe('Controller: validate', () => {
       status: ValidatorController.Validator.STATUS().CONFIRMED,
       id: 'id'
     });
+    this.stubMailAdd.resolves(true);
     const resCallback = ValidatorController.callback('id');
-    expect(resCallback).to.be.deep.eq(stubSubmission);
+    expect(resCallback).to.be.deep.eq({
+      contractValue: stubSubmission.contractValue,
+      status:  ValidatorController.Validator.STATUS().CONFIRMED,
+      hash: 'hash'
+    });
 
     expect(this.stubValidatorCallback.calledWith('id') ).to.be.true;
     expect(this.stubDbGet.calledWith('id') ).to.be.true;
+    expect(this.stubMailAdd.calledWith(
+      stubSubmission.content.email,
+      stubSubmission.content.birthday
+    ) ).to.be.true;
 
     expect(stubSubmission.status).to.eq(ValidatorController.Validator.STATUS().CONFIRMED);
     expect(stubSubmission.contractValue).to.eq(`${stubSubmission.status}:hash`);
