@@ -15,6 +15,8 @@ module.exports = {
   WEB_APP: {
     BASE_URL: process.env.WEB_APP_BASE_URL || process.env.VUE_APP_WEB_APP_BASE_URL || 'http://localhost:8080'
   },
+  SENTRY_URL: process.env.SENTRY_URL || process.env.VUE_APP_SENTRY_URL || null,
+  GA_ID: process.env.GA_ID || process.env.VUE_APP_GA_ID || null,
   RUN: {
     VERIFY: envParser.boolean('VERIFY', true)
   },

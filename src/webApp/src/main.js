@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
-import '@/registerServiceWorker';
+import '@/plugins/registerServiceWorker';
+import '@/plugins/sentry';
+import '@/plugins/ga';
 
 import App from '@/App.vue';
 import router from '@/router';
