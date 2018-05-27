@@ -5,6 +5,7 @@ const config = require('../../../../config');
 const Db = require('../../../modules/db');
 const Validators = require('../../../modules/validators');
 const Errors = require('../../../../utils/errors');
+const Mail = require('../../../modules/mail');
 
 const ValidatorController = {
 
@@ -61,6 +62,29 @@ const ValidatorController = {
 
       submission.status = res.status;
       submission.contractValue =  `${submission.status}:${submission.hash}`;
+
+      if(res.status === Validators.interface.STATUS().CONFIRMED){
+
+        Mail.add(submission.content.email, submission.content.birthday)
+          .then(() => {
+
+            log.info('Mail add', {
+              email: submission.content.email,
+              birthday: submission.content.birthday
+            });
+
+          })
+          .catch((error) => {
+
+            log.error('Mail add', {
+              error,
+              email: submission.content.email,
+              birthday: submission.content.birthday
+            });
+
+          });
+
+      }
 
     }
 

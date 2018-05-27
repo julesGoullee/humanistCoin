@@ -6,6 +6,8 @@
     "NODE_URL": "https://ropsten.infura.io/mBkAOhJzJNhjBUNAoAVx",
     "NODE_URL_WS": "wss://ropsten.infura.io/ws/mBkAOhJzJNhjBUNAoAVx",
     "NETWORK": "ropsten",
-    "SENDGRID_API_KEY": "@humanist-coin-sendgrip-api-key"
+    "SENDGRID_API_KEY": "@humanist-coin-sendgrip-api-key",
+    "MAILCHIMP_LIST_ID": "315d46adef",
+    "MAILCHIMP_API_KEY": "@humanist-coin-mailchimp-api-key"
   }
 }
