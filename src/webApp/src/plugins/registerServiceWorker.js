@@ -4,7 +4,7 @@ import { register } from 'register-service-worker';
 import config from '@/../../config';
 
 if (config.ENV === 'production') {
-  register(`${config.WEB_APP.BASE_URL}/service-worker.js`, {
+  register(`${window.location.href}/service-worker.js`, {
     ready() {
       console.log(
         'App is being served from cache by a service worker.\n' +

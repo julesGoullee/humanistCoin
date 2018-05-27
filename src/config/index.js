@@ -12,9 +12,6 @@ module.exports = {
     VALIDATOR: 'email',
     BASE_URL: process.env.API_BASE_URL || process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'
   },
-  WEB_APP: {
-    BASE_URL: process.env.WEB_APP_BASE_URL || process.env.VUE_APP_WEB_APP_BASE_URL || 'http://localhost:8080'
-  },
   SENTRY_URL: process.env.SENTRY_URL || process.env.VUE_APP_SENTRY_URL || null,
   GA_ID: process.env.GA_ID || process.env.VUE_APP_GA_ID || null,
   RUN: {
