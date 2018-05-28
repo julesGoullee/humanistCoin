@@ -1,3 +1,5 @@
+import config from '@/../../config';
+
 if (config.ENV === 'production' && window.location.origin !== 'localhost') {
 
   (function (h, o, t, j, a, r) {
