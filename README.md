@@ -25,9 +25,8 @@ true,
 move event in store contract
 verify contract
 check address on added
-mailchimp
 catch send unkown account
 0x private key
 ga action
-service worker disable localhost
+placeholder input
 

@@ -3,7 +3,7 @@
 import { register } from 'register-service-worker';
 import config from '@/../../config';
 
-if (config.ENV === 'production') {
+if (config.ENV === 'production' && window.location.origin !== 'localhost') {
   register(`${window.location.origin}/service-worker.js`, {
     ready() {
       console.log(
