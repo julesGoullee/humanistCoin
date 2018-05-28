@@ -3,6 +3,7 @@ import { sync } from 'vuex-router-sync';
 import '@/plugins/registerServiceWorker';
 import '@/plugins/sentry';
 import '@/plugins/ga';
+import '@/plugins/hotjar';
 
 import App from '@/App.vue';
 import router from '@/router';
