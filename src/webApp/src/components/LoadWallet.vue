@@ -2,7 +2,12 @@
   <div id="load-wallet">
     <div v-if="!(ethWallet && ethWallet.opened)" >
       <div>Enter private key:</div>
-      <input :value="privateKey" @input="updatePrivateKey" :disabled="isValidPrivateKey">
+      <input
+        :value="privateKey"
+        @input="updatePrivateKey"
+        :disabled="isValidPrivateKey"
+        placeholder="0xA1B2C3D4E5...."
+      >
     </div>
     <transition name="fade">
       <div v-if="ethWallet && !ethWallet.opened" >Open wallet ...</div>

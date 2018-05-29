@@ -9,6 +9,7 @@
     <div>
       <br/>
       <div>Transactions: </div>
+      <div v-if="txs.length === 0">Any transaction</div>
       <br/>
       <div
         v-for="tx in txs"
@@ -27,8 +28,19 @@
       </div>
     </div>
     <form id="send-form" @submit="onSend" v-if="balance > 0 && !isSending">
-      <input id="send-address" v-model.trim="address" >
-      <input id="send-amount" type="number" step="any" v-model.trim="sendAmount" >
+      <div>Send:</div>
+      <input
+        id="send-address"
+        v-model.trim="address"
+        placeholder="0xA1B2C3D4E5...."
+      >
+      <input
+        id="send-amount"
+        type="number"
+        step="any"
+        v-model.trim="sendAmount"
+        placeholder="amount"
+      >
       <input id="send-submit" type="submit" value="Send">
     </form>
     <div v-if="errors.length === 0 && isSending" id="send-waiting">
