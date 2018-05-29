@@ -28,6 +28,4 @@ verify contract
 check address on added
 catch send unkown account
 0x private key
-
-placeholder input
-
+parse birthday hours

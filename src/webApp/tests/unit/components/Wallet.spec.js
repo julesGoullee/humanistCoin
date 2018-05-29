@@ -16,7 +16,7 @@ describe('Components: Wallet', function() {
       },
       getters: {
         me: this.sandbox.stub(),
-        txs: this.sandbox.stub(),
+        txs: this.sandbox.stub().returns([]),
         ethWallet: this.sandbox.stub(),
         balance: this.sandbox.stub()
       }
@@ -61,6 +61,7 @@ describe('Components: Wallet', function() {
     expect(wrapper.find('div').text()).to.include('Created at:');
     expect(wrapper.find('div').text()).to.include('Validate: true');
     expect(wrapper.find('div').text()).to.include('Balance: balance');
+    expect(wrapper.find('div').text()).to.include('Any transaction');
   });
 
   it('Cannot render balance balance if not exist', () => {
