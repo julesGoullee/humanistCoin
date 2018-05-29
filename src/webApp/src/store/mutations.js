@@ -2,23 +2,23 @@ import storeHumanist from '@/store/storeHumanist';
 
 const mutations = {
 
-  createWallet: (state, ethWallet) => {
+  createWallet: (state, { ethWallet }) => {
     state.ethWallet = ethWallet;
   },
-  createHumanist: (state, humanist) => {
+  createHumanist: (state, { humanist }) => {
     state.humanist = humanist.ethWallet.data.address;
     storeHumanist.data[humanist.ethWallet.data.address] = humanist;
   },
   nodeConnect: (state) => {
     state.nodeConnected = true;
   },
-  me: (state, me) => {
+  me: (state, { me }) => {
     state.me = me;
   },
   submit: (state) => {
     state.submission.status = 'submit';
   },
-  submitOracle: (state, submission) => {
+  submitOracle: (state, { submission }) => {
     Object.assign(state.submission, submission);
   },
   createSubmission: (state) => {
@@ -26,13 +26,13 @@ const mutations = {
       status: null
     };
   },
-  validateSubmission: (state, status) => {
+  validateSubmission: (state, { status }) => {
     state.submission.status = status ? 'validate' : 'rejected';
   },
-  balance: (state, balance) => {
+  balance: (state, { balance }) => {
     state.balance = balance;
   },
-  tx: (state, tx) => {
+  tx: (state, { tx }) => {
     state.txs.push(tx);
   }
 };

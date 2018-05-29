@@ -26,14 +26,24 @@ describe('Service: Status watcher', () => {
 
   });
 
-  it('Should fire on event', () => {
+  it('Should fire on event and remove if valid', () => {
 
     expect(StatusWatcher.start() ).to.be.true;
-    StatusWatcher.contract.onvalidatehuman('address', 'state');
+    StatusWatcher.contract.onvalidatehuman('address', true);
     expect(this.stubDbRemoveByProp.calledWith('address', 'address') ).to.be.true;
     expect(typeof StatusWatcher.contract.onvalidatehuman).to.eq('function');
 
   });
+
+  it('Should fire on event and do nothing if invalid', () => {
+
+    expect(StatusWatcher.start() ).to.be.true;
+    StatusWatcher.contract.onvalidatehuman('address', false);
+    expect(this.stubDbRemoveByProp.callCount).to.eq(0);
+    expect(typeof StatusWatcher.contract.onvalidatehuman).to.eq('function');
+
+  });
+
 
   it('Should stop', () => {
 

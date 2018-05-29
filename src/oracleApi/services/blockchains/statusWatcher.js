@@ -16,10 +16,15 @@ const StatusWatcher = {
 
     log.info('status watcher', 'start');
     StatusWatcher.contract = new Ethers.Contract(config.CONTRACT_ADDRESS, abi, providerEthers);
-    StatusWatcher.contract.onvalidatehuman = (address, state) => {
+    StatusWatcher.contract.onvalidatehuman = (address, status) => {
 
-      log.info('status watcher', { address, state });
-      Db.removeByProp('address', address);
+      log.info('status watcher', { address, status });
+
+      if(status){
+
+        Db.removeByProp('address', address);
+
+      }
 
     };
 

@@ -23,10 +23,11 @@ true,
 #TODO:
 
 move event in store contract
+sendgrid dns
 verify contract
 check address on added
 catch send unkown account
 0x private key
-ga action
+
 placeholder input
 

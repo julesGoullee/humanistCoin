@@ -74,9 +74,9 @@ class Humanist extends EventEmitter{
 
     }
 
-    this.contract.onvalidatehuman = (address, state) => {
+    this.contract.onvalidatehuman = (address, status) => {
 
-      this.emit('validate', { address, state });
+      this.emit('validate', { address, status });
 
     };
 
@@ -118,7 +118,7 @@ class Humanist extends EventEmitter{
 
     const onClose = async () => {
 
-      if(this.ethWallet.constructor.initialize){
+      if(this.ethWallet.constructor.initialize && this.listening){
 
         await this.ethWallet.constructor.waitWsConnection();
 

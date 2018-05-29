@@ -192,13 +192,13 @@ describe('Humanist', () => {
 
         let isFire = false;
 
-        this.humanist.on('validate', ({ address, state }) => {
+        this.humanist.on('validate', ({ address, status }) => {
 
           expect(isFire).to.be.false;
 
           isFire = true;
           expect(address).to.exist;
-          expect(state).to.be.true;
+          expect(status).to.be.true;
 
         });
 
@@ -985,12 +985,12 @@ describe('Humanist', () => {
         expect(resCallback.status).to.eq(InterfaceValidator.STATUS().CONFIRMED);
 
         let eventValidateFire = false;
-        this.humanist.on('validate', ({address, state}) => {
+        this.humanist.on('validate', ({address, status}) => {
 
           expect(eventValidateFire).to.be.false;
           eventValidateFire = true;
           expect(address).to.be.exist;
-          expect(state).to.be.true;
+          expect(status).to.be.true;
 
         });
 
