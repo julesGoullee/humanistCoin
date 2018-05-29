@@ -27,20 +27,20 @@ describe('Store: mutations', function() {
   });
 
   it('Should create wallet', () => {
-    mutations.createWallet(this.state, 'ethWallet');
+    mutations.createWallet(this.state, { ethWallet: 'ethWallet' });
     expect(this.state.ethWallet).to.eq('ethWallet');
   });
 
   it('Should create humanist', () => {
 
-    mutations.createHumanist(this.state, this.humanist);
+    mutations.createHumanist(this.state, { humanist: this.humanist });
 
     expect(this.state.humanist).to.eq('humanist');
     expect(storeHumanist.data[this.state.humanist]).to.deep.eq(this.humanist);
   });
 
   it('Should update me', () => {
-    mutations.me(this.state, 'me');
+    mutations.me(this.state, { me: 'me' });
     expect(this.state.me).to.eq('me');
   });
 
@@ -62,34 +62,34 @@ describe('Store: mutations', function() {
 
   it('Should submit oracle', () => {
     mutations.createSubmission(this.state);
-    mutations.submitOracle(this.state, { id: 'id' });
+    mutations.submitOracle(this.state, { submission: { id: 'id' } });
     expect(this.state.submission.status).to.be.null;
     expect(this.state.submission.id).to.eq('id');
   });
 
   it('Should validate submission', () => {
     mutations.createSubmission(this.state);
-    mutations.validateSubmission(this.state, true);
+    mutations.validateSubmission(this.state, { status: true });
     expect(this.state.submission.status).to.eq('validate');
   });
 
   it('Should reject submission', () => {
     mutations.createSubmission(this.state);
-    mutations.validateSubmission(this.state);
+    mutations.validateSubmission(this.state, {});
     expect(this.state.submission.status).to.eq('rejected');
   });
 
   it('Should reject submission', () => {
     mutations.createSubmission(this.state);
-    mutations.validateSubmission(this.state, false);
+    mutations.validateSubmission(this.state, { status: false });
     expect(this.state.submission.status).to.eq('rejected');
   });
   it('Should update balance', () => {
-    mutations.balance(this.state, 'balance');
+    mutations.balance(this.state, { balance: 'balance' });
     expect(this.state.balance).to.eq('balance');
   });
   it('Should add tx', () => {
-    mutations.tx(this.state, 'tx');
+    mutations.tx(this.state, { tx: 'tx' });
     expect(this.state.txs.length).to.eq(1);
     expect(this.state.txs[0]).to.eq('tx');
   });

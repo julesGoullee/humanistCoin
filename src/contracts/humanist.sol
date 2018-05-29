@@ -80,16 +80,16 @@ contract Humanist is IErc20, usingOraclize {
 
     strings.slice memory result = _result.toSlice();
     strings.slice memory delimiter = ":".toSlice();
-    strings.slice memory state;
+    strings.slice memory status;
     strings.slice memory hash;
-    result.split(delimiter, state);
+    result.split(delimiter, status);
     result.split(delimiter, hash);
 
     Types.Human memory human = store.get(addr);
 
     require(keccak256(abi.encodePacked(hash.toString())) == human.hash);
 
-    bool isValid = state.equals("CONFIRMED".toSlice());
+    bool isValid = status.equals("CONFIRMED".toSlice());
 
     if (isValid) {
 

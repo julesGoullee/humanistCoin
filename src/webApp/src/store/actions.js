@@ -7,6 +7,7 @@ import Humanist from '@/../../humanist';
 import config from '@/../../config';
 import storeHumanist from '@/store/storeHumanist';
 import Errors from '@/../../utils/errors';
+import ethers from 'ethers';
 
 const actions = {
 
@@ -19,14 +20,38 @@ const actions = {
       config.CONTRACT_ADDRESS = info.contractAddress;
     }
 
-    commit('nodeConnect');
+    commit('nodeConnect', {
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'connection',
+            eventAction: 'nodeConnect',
+            eventLabel: 'Node connection ',
+            eventValue: 1
+          }]
+        ]
+      }
+    });
   },
   createWallet: async ({ state, commit, dispatch }, { privateKey }) => {
     assert(!state.ethWallet, 'wallet_eth_already_exist');
     assert(!storeHumanist.data[state.humanist], 'humanist_already_exist');
     const ethWallet = new EthWallet({ privateKey });
     await ethWallet.open();
-    commit('createWallet', ethWallet);
+    commit('createWallet', {
+      ethWallet,
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'connection',
+            eventAction: 'eth_wallet',
+            eventLabel: 'Ethereum wallet',
+            eventValue: 1
+          }]
+        ]
+      }
+    });
+
     await dispatch('createHumanist');
   },
   submit: async ({ state, commit, dispatch }, { email, birthday }) => {
@@ -34,7 +59,18 @@ const actions = {
     assert(!state.me || !state.me.validate, 'humanist_already_validate');
     assert(storeHumanist.data[state.humanist], 'unknown_humanist');
 
-    commit('submit');
+    commit('submit', {
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'submission',
+            eventAction: 'submit',
+            eventLabel: 'submit',
+            eventValue: birthday.unix()
+          }]
+        ]
+      }
+    });
 
     if (config.RUN.VERIFY) {
 
@@ -43,10 +79,22 @@ const actions = {
     } else {
 
       commit('submitOracle', {
-        email,
-        birthday: birthday.format(),
-        id: 'id',
-        status: 'CONFIRMED'
+        submission: {
+          email,
+          birthday: birthday.format(),
+          id: 'id',
+          status: 'CONFIRMED'
+        },
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'submitOracle',
+              eventLabel: 'submit oracle',
+              eventValue: birthday.unix()
+            }]
+          ]
+        }
       });
 
       await dispatch('submitBC');
@@ -67,11 +115,34 @@ const actions = {
     try {
 
       const submission = await ApiClient.submission(content, storeHumanist.data[state.humanist].ethWallet.data.address);
-      commit('submitOracle', Object.assign({}, content, submission) );
+      commit('submitOracle', {
+        submission: Object.assign({}, content, submission),
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'submitOracle',
+              eventLabel: 'submit oracle',
+              eventValue: birthday.unix()
+            }]
+          ]
+        }
+      });
 
     } catch (error) {
 
-      commit('createSubmission');
+      commit('createSubmission', {
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'createSubmission',
+              eventLabel: 'create submission',
+              eventValue: 0
+            }]
+          ]
+        }
+      });
 
       throw error;
 
@@ -85,7 +156,19 @@ const actions = {
 
     const submission = await ApiClient.callbackEmail(code);
 
-    commit('submitOracle', submission);
+    commit('submitOracle', {
+      submission,
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'submission',
+            eventAction: 'submitOracle',
+            eventLabel: 'submit oracle',
+            eventValue: moment(submission.birthday).unix()
+          }]
+        ]
+      }
+    });
 
     if(submission.status === 'CONFIRMED'){
 
@@ -93,7 +176,18 @@ const actions = {
 
     } else if(submission.status === 'REJECTED'){
 
-      commit('createSubmission');
+      commit('createSubmission', {
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'createSubmission',
+              eventLabel: 'create submission',
+              eventValue: 0
+            }]
+          ]
+        }
+      });
       Errors.throwError('invalid_submission_status', submission.status, true);
 
     }
@@ -115,21 +209,56 @@ const actions = {
     });
 
     if(!res){
-      commit('createSubmission');
+      commit('createSubmission', {
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'createSubmission',
+              eventLabel: 'create submission',
+              eventValue: 0
+            }]
+          ]
+        }
+      });
       Errors.throwError('humanist_already_exist', {}, true);
     }
 
     if (!config.RUN.VERIFY) {
-      commit('validateSubmission', true);
+      commit('validateSubmission', {
+        status: true,
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'validateSubmission',
+              eventLabel: 'validate submission',
+              eventValue: 1
+            }]
+          ]
+        }
+      });
       await dispatch('me');
     }
   },
   validateSubmission: async ({ state, commit, dispatch }, result) => {
     assert(storeHumanist.data[state.humanist], 'unknown_humanist');
     assert(!state.me || !state.me.validate, 'humanist_already_validate');
-    commit('validateSubmission', result.state);
+    commit('validateSubmission',  {
+      status: result.status,
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'submission',
+            eventAction: 'validateSubmission',
+            eventLabel: 'validate submission',
+            eventValue: result.status ? 1 : 0
+          }]
+        ]
+      }
+    });
 
-    if (result.state) {
+    if (result.status) {
       await dispatch('me');
     }
   },
@@ -138,7 +267,19 @@ const actions = {
     assert(!state.me || !state.me.validate, 'humanist_already_validate');
 
     storeHumanist.data[state.humanist].on('validate', async (result) => {
-      await dispatch('validateSubmission', result);
+      await dispatch('validateSubmission', {
+        status: result.status,
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'validateSubmission',
+              eventLabel: 'validate submission',
+              eventValue: result.status ? 1 : 0
+            }]
+          ]
+        }
+      });
     });
   },
   createHumanist: async ({ state, commit, dispatch }) => {
@@ -148,7 +289,19 @@ const actions = {
     const contract = Humanist.getContract(config.CONTRACT_ADDRESS, state.ethWallet);
     const humanist = new Humanist(state.ethWallet, contract);
 
-    commit('createHumanist', humanist);
+    commit('createHumanist', {
+      humanist,
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'connection',
+            eventAction: 'createHumanist',
+            eventLabel: 'create humanist',
+            eventValue: 1
+          }]
+        ]
+      }
+    });
     await dispatch('me');
   },
   me: async ({ state, commit, dispatch }) => {
@@ -157,7 +310,19 @@ const actions = {
     const me = await storeHumanist.data[state.humanist].me();
 
     if (me && me.validate) {
-      commit('me', me);
+      commit('me', {
+        me,
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'connection',
+              eventAction: 'me',
+              eventLabel: 'me',
+              eventValue: 1
+            }]
+          ]
+        }
+      });
       await storeHumanist.data[state.humanist].listen();
 
       await dispatch('balance');
@@ -166,7 +331,18 @@ const actions = {
       dispatch('watchBalance');
     } else {
       const oldStatus = state.submission && state.submission.status;
-      commit('createSubmission');
+      commit('createSubmission', {
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'submission',
+              eventAction: 'createSubmission',
+              eventLabel: 'create submission',
+              eventValue: 1
+            }]
+          ]
+        }
+      });
 
       if (oldStatus === 'validate') {
         Errors.throwError('tx_failed_humanist_already_exist_or_unknown', {}, true);
@@ -185,14 +361,39 @@ const actions = {
     assert(state.me && state.me.validate, 'humanist_not_validate');
 
     const balance = await storeHumanist.data[state.humanist].balance();
-    commit('balance', balance);
+
+    commit('balance', {
+      balance,
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'balance',
+            eventAction: 'balance',
+            eventLabel: 'balance',
+            eventValue: parseInt(ethers.utils.parseEther(balance).toString() )
+          }]
+        ]
+      }
+    });
   },
   watchBalance: ({ state, commit }) => {
     assert(storeHumanist.data[state.humanist], 'unknown_humanist');
     assert(state.me && state.me.validate, 'humanist_not_validate');
 
     storeHumanist.data[state.humanist].on('balance', async (balance) => {
-      commit('balance', balance);
+      commit('balance', {
+        balance,
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'balance',
+              eventAction: 'balance',
+              eventLabel: 'balance',
+              eventValue: parseInt(ethers.utils.parseEther(balance).toString() )
+            }]
+          ]
+        }
+      });
     });
   },
   txHistory: async ({ state, commit }) => {
@@ -200,14 +401,38 @@ const actions = {
     assert(state.me && state.me.validate, 'humanist_not_validate');
 
     const txs = await storeHumanist.data[state.humanist].txHistory();
-    txs.map(tx => commit('tx', tx));
+    txs.map(tx => commit('tx', {
+      tx,
+      meta: {
+        analytics: [
+          ['event', {
+            eventCategory: 'balance',
+            eventAction: 'balance',
+            eventLabel: 'balance',
+            eventValue: parseInt(ethers.utils.parseEther(tx.amount).toString() )
+          }]
+        ]
+      }
+    }) );
   },
   watchTx: ({ state, commit }) => {
     assert(storeHumanist.data[state.humanist], 'unknown_humanist');
     assert(state.me && state.me.validate, 'humanist_not_validate');
 
     storeHumanist.data[state.humanist].on('tx', async (tx) => {
-      commit('tx', tx);
+      commit('tx', {
+        tx,
+        meta: {
+          analytics: [
+            ['event', {
+              eventCategory: 'balance',
+              eventAction: 'balance',
+              eventLabel: 'balance',
+              eventValue: parseInt(ethers.utils.parseEther(tx.amount).toString() )
+            }]
+          ]
+        }
+      });
     });
   }
 
