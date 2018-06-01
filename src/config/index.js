@@ -18,5 +18,5 @@ module.exports = {
     VERIFY: envParser.boolean('VERIFY', true)
   },
   CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || process.env.VUE_APP_CONTRACT_ADDRESS
-  || '0x21a6C197788e93906ff9BD9b631700027E785b05'
+  || '0x14a91A7dbb11306aA281291Ce77De56efA0C98D1'
 };
