@@ -5,7 +5,7 @@
     "name": "count",
     "outputs": [
       {
-        "name": "",
+        "name": "number",
         "type": "uint256"
       }
     ],

@@ -63,7 +63,7 @@ contract Store is Ownable {
 
   }
 
-  function count() public view returns (uint) {
+  function count() public view returns (uint number) {
 
     return humanCount;
 

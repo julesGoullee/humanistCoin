@@ -112,7 +112,7 @@ contract Humanist is IErc20, usingOraclize {
     Types.Human memory humanTo = store.get(_to);
 
     require(humanFrom.validate);
-    require(humanTo.createdAt > 0);
+    require(humanTo.createdAt != 0);
 
     Types.Asset[] memory assets = humanFrom.assets;
     uint arrLength = assets.length;
@@ -144,32 +144,30 @@ contract Humanist is IErc20, usingOraclize {
   function add(
     uint _birthday,
     string _email,
-    string _id) public payable returns (bool success) {
+    string _id,
+    address _addr) public payable returns (bool success) {
 
+    Types.Human memory human = store.get(_addr);
     bytes32 hash = keccak256(abi.encodePacked(_email));
 
-    require(humanExist(hash) == false);
+    require(!humanExist(hash) && human.createdAt == 0);
 
     uint amount = getSupply(_birthday);
 
-    store.add(hash, msg.sender, _birthday, amount);
+    store.add(hash, _addr, _birthday, amount);
 
     if (verify) {
 
-      if (oraclize_getPrice("URL") > msg.value || minAmountAdd > msg.value) {
-
-        revert();
-
-      }
+      require(oraclize_getPrice("URL") < msg.value && minAmountAdd <= msg.value);
 
       string memory url = makeUrl(_id);
       bytes32 queryId = oraclize_query("URL", url);
-      oraclizeValidIds[queryId] = OraclizeQueries(msg.sender, true);
+      oraclizeValidIds[queryId] = OraclizeQueries(_addr, true);
 
     } else {
 
-      store.validate(msg.sender);
-      emit ValidateHuman(msg.sender, true);  // solhint-disable-line
+      store.validate(_addr);
+      emit ValidateHuman(_addr, true);  // solhint-disable-line
 
     }
 
@@ -185,7 +183,7 @@ contract Humanist is IErc20, usingOraclize {
     Types.Human memory human = store.get(_tokenOwner);
     uint assetsCount = human.assets.length;
 
-    if (assetsCount == 0) {
+    if (human.createdAt == 0) {
 
       return supply;
 
@@ -250,7 +248,7 @@ contract Humanist is IErc20, usingOraclize {
 
   }
 
-  function humanExist(bytes32 _hash) internal view returns (bool success) {
+  function humanExist(bytes32 _hash) public view returns (bool success) {
 
     uint count = store.count();
 
@@ -265,6 +263,14 @@ contract Humanist is IErc20, usingOraclize {
     }
 
     return false;
+
+  }
+
+  function humanExist(address _addr) public view returns (bool success){
+
+    Types.Human memory human = store.get(_addr);
+
+    return human.createdAt != 0;
 
   }
 

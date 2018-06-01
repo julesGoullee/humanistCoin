@@ -123,6 +123,10 @@
       {
         "name": "_id",
         "type": "string"
+      },
+      {
+        "name": "_addr",
+        "type": "address"
       }
     ],
     "name": "add",
@@ -134,6 +138,25 @@
     ],
     "payable": true,
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "humanExist",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -163,6 +186,25 @@
       {
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "name": "humanExist",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
       }
     ],
     "payable": false,
