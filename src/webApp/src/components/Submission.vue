@@ -1,6 +1,7 @@
 <template>
   <div id="submission">
     <form id="submission-form" @submit="onSubmit" v-if="submission.status === null">
+      <label for="month">Birthday:</label>
       <select v-model="birthday.month" aria-label="Month" name="birthday_month" id="month" title="Month">
         <option value="0">Month</option>
         <option value="1">Jan</option>
@@ -41,16 +42,24 @@
           v-bind:key="i"
         >{{ now.year() - i }}</option>
       </select>
-      <label for="email">Emails:</label>
-      <input id="email" v-model.trim="email" >
+      <br/>
+      <input
+        id="email"
+        v-model.trim="email"
+        placeholder="Email"
+      >
       <input id="submit" type="submit" value="Validate">
     </form>
     <div v-if="errors.length === 0 && submission.status === 'CONFIRMED'" id="submission-bc-waiting">
       Account is creating, Waiting for validation....
     </div>
     <form id="submission-oracle-form" @submit="onSubmitEmailCode" v-if="submission.status === 'PENDING'">
-      <label for="email">Enter code you receive by email</label>
-      <input id="email-code" v-model.trim="emailCode" >
+      <label for="email">Enter code you receive by email:</label>
+      <br/>
+      <input
+        id="email-code"
+        v-model.trim="emailCode"
+      >
       <input id="submit-email-code" type="submit" value="Validate">
     </form>
     <div v-if="errors.length > 0" id="errors">
