@@ -144,6 +144,35 @@ describe('Humanist', () => {
 
     });
 
+    it('Should delegate addition', async () => {
+
+      const ethWallet1 = new EthWallet();
+      await ethWallet1.open();
+
+      await this.faucetEthWallet.send(ethWallet1.data.address, '1');
+
+      const humanist1 = new Humanist(ethWallet1, Humanist.getContract(this.contractHumanist.address, ethWallet1) );
+      const balance = await humanist1.balance();
+      expect(balance).to.eq('1.0' );
+
+      const res = await this.humanist.add({
+        birthday: Utils.nowInSecond(),
+        email: 'email1@email.com',
+        id: 'id1',
+        address: humanist1.ethWallet.data.address
+      });
+      expect(res).to.be.true;
+      const balanceAfter = await humanist1.balance();
+
+      const blockNumber = await this.ethWallet.walletClient.provider.getBlockNumber();
+      const expectValue = Utils.valueDecrease(
+        balance, blockNumber, blockNumber,
+        this.esperance);
+
+      expect(balanceAfter).to.eq(expectValue.toDP(18, Decimal.ROUND_CEIL).toString() );
+
+    });
+
     it('Should add with old greater than esperance', async () => {
 
       const balance = await this.humanist.balance();
@@ -171,6 +200,44 @@ describe('Humanist', () => {
         id: 'id',
         amount: '0.00000000001'
       }) ).to.be.rejectedWith(Error, 'insufficient_amount');
+
+    });
+
+    it('Should get exiting human by address', async () => {
+
+      const res = await this.humanist.exist();
+      expect(res).to.be.false;
+
+      await this.humanist.add({
+        birthday: Utils.nowInSecond(),
+        email: 'email@email.com',
+        id: 'id'
+      });
+
+      const res1 = await this.humanist.exist();
+      expect(res1).to.be.true;
+
+    });
+
+    it('Should get other existing human', async () => {
+
+      const ethWallet1 = new EthWallet();
+      await ethWallet1.open();
+
+      await this.faucetEthWallet.send(ethWallet1.data.address, '1');
+
+      const humanist1 = new Humanist(ethWallet1, Humanist.getContract(this.contractHumanist.address, ethWallet1) );
+      const res = await this.humanist.exist(humanist1.ethWallet.data.address);
+      expect(res).to.be.false;
+
+      await humanist1.add({
+        birthday: Utils.nowInSecond(),
+        email: 'email@email.com',
+        id: 'id'
+      });
+
+      const res1 = await this.humanist.exist(humanist1.ethWallet.data.address);
+      expect(res1).to.be.true;
 
     });
 
@@ -482,11 +549,11 @@ describe('Humanist', () => {
       });
       const ethWallet1 = new EthWallet();
       await ethWallet1.open();
-      await this.faucetEthWallet.send(ethWallet1.data.address, '1');
-      const humanist1 = new Humanist(ethWallet1, this.contractHumanist);
 
-      const res = await this.humanist.send(humanist1.ethWallet.data.address, '0.01');
-      expect(res).to.be.false;
+      const humanist1 = new Humanist(ethWallet1, Humanist.getContract(this.contractHumanist.address, ethWallet1) );
+
+      await expect(this.humanist.send(humanist1.ethWallet.data.address, '0.1') )
+        .to.be.rejectedWith(Error, 'receiver_unknown');
 
     });
 

@@ -189,6 +189,15 @@ const ERRORS = {
   },
   insufficient_fund_eth: {
     description: 'Insufficient fund eth',
+  },
+  invalid_amount: {
+    description: 'Invalid amount',
+  },
+  invalid_address: {
+    description: 'Invalid address'
+  },
+  receiver_unknown: {
+    description: 'Receiver unknown'
   }
 };
 

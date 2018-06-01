@@ -32,6 +32,12 @@ class Humanist extends EventEmitter{
 
   }
 
+  static isBlockchainExecError(error){
+
+    return error.message === Humanist.blockchainExecError;
+
+  }
+
   close(){
 
     if(this.listening){
@@ -139,7 +145,13 @@ class Humanist extends EventEmitter{
 
   }
 
-  async add({ birthday, email, id, amount = Humanist.addMinAmount }){
+  async add({
+    birthday,
+    email,
+    id,
+    amount = Humanist.addMinAmount,
+    address = this.ethWallet.data.address
+  }){
 
     assert(new Decimal(amount).gte(Humanist.addMinAmount), 'insufficient_amount');
 
@@ -152,7 +164,9 @@ class Humanist extends EventEmitter{
       const tx = await this.contract.add(
         birthday,
         email,
-        id, {
+        id,
+        address,
+        {
           value: Ethers.utils.parseEther(amount),
           gasPrice: await this.ethWallet.walletClient.provider.getGasPrice(),
           gasLimit: 4000000 // todo estimate
@@ -240,6 +254,7 @@ class Humanist extends EventEmitter{
     assert(this.ethWallet.constructor.isValidAddress(address), 'invalid_address');
     assert(await this._haveEthAmount('0.001'), 'insufficient_fund_eth' );
     assert(await this._haveAmount(value), 'insufficient_fund' );
+    assert(await this.exist(address), 'receiver_unknown' );
 
     try {
 
@@ -370,9 +385,20 @@ class Humanist extends EventEmitter{
 
   }
 
-  static isBlockchainExecError(error){
+  async exist(address = this.ethWallet.data.address){
 
-    return error.message === Humanist.blockchainExecError;
+    try {
+
+      const res = await this.contract.functions['humanExist(address)'](address);
+
+      return res;
+
+    } catch (error){
+
+      console.log(error);
+      Errors.throwError('unknown_blockchain_error', { error });
+
+    }
 
   }
 
