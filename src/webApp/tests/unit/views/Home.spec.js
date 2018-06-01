@@ -7,7 +7,7 @@ import LoadWallet from '@/components/LoadWallet.vue';
 import Wallet from '@/components/Wallet.vue';
 import Submission from '@/components/Submission.vue';
 
-describe('Views: Home.vue', function() {
+describe('Views: Home.vue', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.localVue = createLocalVue();

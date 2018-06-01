@@ -2,9 +2,9 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import Wallet from '@/components/Wallet.vue';
-import { nowInSecond, wait } from '@/../../utils';
+import { nowInSecond } from '@/../../utils';
 
-describe('Components: Wallet', function() {
+describe('Components: Wallet', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.localVue = createLocalVue();
@@ -212,11 +212,9 @@ describe('Components: Wallet', function() {
     wrapper.find('#send-submit').trigger('submit');
 
     expect(wrapper.find('div').text()).to.include('Transaction is sending');
-    expect(wrapper.find('#send-form').exists() ).to.be.false;
+    expect(wrapper.find('#send-form').exists()).to.be.false;
     await this.localVue.nextTick();
-    expect(wrapper.find('#send-form').exists() ).to.be.true;
-    expect(wrapper.find('#send-waiting').exists() ).to.be.false;
-
+    expect(wrapper.find('#send-form').exists()).to.be.true;
+    expect(wrapper.find('#send-waiting').exists()).to.be.false;
   });
-
 });

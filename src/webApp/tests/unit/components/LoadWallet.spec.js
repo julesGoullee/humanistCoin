@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import LoadWallet from '@/components/LoadWallet.vue';
 import EthWallet from '@/../../ethWallet';
 
-describe('Components: LoadWallet', function() {
+describe('Components: LoadWallet', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.localVue = createLocalVue();

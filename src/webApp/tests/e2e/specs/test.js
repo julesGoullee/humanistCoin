@@ -15,7 +15,6 @@ describe('Test', () => {
   });
 
   describe('Create new human', () => {
-
     it('Cannot create with invalid email', () => {
       cy.visit('/');
       cy.get('input').type('0xf7af7eb037b080d39ca9055b9fc3f6c9db4a100e2d7c2e9ffef139911e5bd3fd');
@@ -45,7 +44,8 @@ describe('Test', () => {
       cy.get('#submission-oracle-form').should('be.visible');
       cy.get('#email-code').type('invalid code');
       cy.get('#submit-email-code').click();
-      cy.get('#errors').contains('Bad parameters: "code" with value "invalid code" fails to match the required pattern');
+      cy.get('#errors')
+        .contains('Bad parameters: "code" with value "invalid code" fails to match the required pattern');
       cy.get('#email-code').clear();
       cy.get('#email-code').type('10000000-0000-0000-0000-000000000000');
       cy.get('#submit-email-code').click();
@@ -100,11 +100,9 @@ describe('Test', () => {
       cy.get('#wallet').contains('Balance:');
       cy.get('#errors').should('not.exist');
     });
-
   });
 
   describe('With humanist', () => {
-
     before(() => {
       cy.visit('/');
       cy.get('input').type('0xb45d72990799ff01f5c9f87732bac7b8818163005b6552ea90973d1ed39a1cfa');
@@ -137,7 +135,5 @@ describe('Test', () => {
       cy.get('#wallet').contains('Amount:');
       cy.get('#wallet').contains('Fee:');
     });
-
   });
-
 });

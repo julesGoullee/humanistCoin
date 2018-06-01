@@ -6,7 +6,7 @@ import state from '@/store/state';
 import getters from '@/store/getters';
 import storeHumanist from '@/store/storeHumanist';
 
-describe('Store: getters', function() {
+describe('Store: getters', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.localVue = createLocalVue();

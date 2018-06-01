@@ -3,7 +3,7 @@
     "mocha": true
   },
   "globals": {
-    "sandbox": true,
+    "createSandbox": true,
     "expect": true
   },
   "rules": {
