@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import Submission from '@/components/Submission.vue';
 const moment = require('moment');
 
-describe('Components: Submission', function() {
+describe('Components: Submission', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.localVue = createLocalVue();
@@ -13,7 +13,7 @@ describe('Components: Submission', function() {
     this.stubs = {
       actions: {
         submit: this.sandbox.stub(),
-        submitCode: this.sandbox.stub(),
+        submitCode: this.sandbox.stub()
       },
       getters: {
         submission: this.sandbox.stub(),
@@ -155,14 +155,14 @@ describe('Components: Submission', function() {
     this.stubs.getters.submission.returns({ status: 'CONFIRMED' });
     const wrapper = shallowMount(Submission, this.shallowConfig);
     expect(wrapper.find('div').text()).to.include('Account is creating');
-    expect(wrapper.find('#submission-form').exists() ).to.be.false;
+    expect(wrapper.find('#submission-form').exists()).to.be.false;
   });
 
   it('Should show when waiting email code when status is PENDING', () => {
     this.stubs.getters.submission.returns({ status: 'PENDING' });
     const wrapper = shallowMount(Submission, this.shallowConfig);
-    expect(wrapper.find('#submission-form').exists() ).to.be.false;
-    expect(wrapper.find('#submission-oracle-form').exists() ).to.be.true;
+    expect(wrapper.find('#submission-form').exists()).to.be.false;
+    expect(wrapper.find('#submission-oracle-form').exists()).to.be.true;
   });
 
   it('Should display error submit email code', () => {
@@ -182,5 +182,4 @@ describe('Components: Submission', function() {
     expect(this.stubs.actions.submitCode.calledOnce).to.be.true;
     expect(this.stubs.actions.submitCode.args[0][1].code).to.be.eq('code');
   });
-
 });

@@ -8,7 +8,7 @@ const getters = {
   balance: state => state.balance,
   nodeConnected: state => state.nodeConnected,
   ethWallet: state => state.ethWallet,
-  humanist: state => storeHumanist.data[state.humanist] || null,
+  humanist: state => storeHumanist.data[state.humanist] || null
 
 };
 

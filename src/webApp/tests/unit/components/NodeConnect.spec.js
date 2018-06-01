@@ -5,7 +5,7 @@ import NodeConnect from '@/components/NodeConnect.vue';
 import { waitNextTick } from '@/../tests/unit/test.utils';
 import { createCustom } from '@/../../utils/errors';
 
-describe('Components: NodeConnect', function() {
+describe('Components: NodeConnect', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.localVue = createLocalVue();

@@ -59,8 +59,8 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import Vue from 'vue';
-const moment = require('moment');
 import { displayError } from '@/../../utils/errors';
+const moment = require('moment');
 
 Vue.filter('formatDate', (value) => {
   if (value) {
@@ -96,15 +96,15 @@ export default {
         address: this.address,
         amount: this.sendAmount
       })
-      .then(() => {
-        this.sendAmount = '';
-        this.address = '';
-        this.isSending = false;
-      })
-      .catch(error => {
-        this.errors.push(displayError(error) );
-        this.isSending = false;
-      });
+        .then(() => {
+          this.sendAmount = '';
+          this.address = '';
+          this.isSending = false;
+        })
+        .catch(error => {
+          this.errors.push(displayError(error));
+          this.isSending = false;
+        });
 
       e.preventDefault();
     }

@@ -53,7 +53,7 @@
       <input id="email-code" v-model.trim="emailCode" >
       <input id="submit-email-code" type="submit" value="Validate">
     </form>
-    <div v-if="errors.length > 0"updateState id="errors">
+    <div v-if="errors.length > 0" id="errors">
       <div>Error{{ errors.length > 1 ? "s" : "" }}: </div>
       <div
         v-for="error in errors"
@@ -65,8 +65,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-const moment = require('moment');
 import { displayError } from '@/../../utils/errors';
+const moment = require('moment');
 
 export default {
   name: 'Submission',
@@ -107,7 +107,7 @@ export default {
           this.submit({ // todo throttle to avoid multiple in same time
             email: this.email,
             birthday
-          }).catch(error => this.errors.push(displayError(error) ) );
+          }).catch(error => this.errors.push(displayError(error)));
         }
       }
 
@@ -120,20 +120,15 @@ export default {
     onSubmitEmailCode(e) {
       this.errors = [];
 
-      if(this.emailCode && this.emailCode.length > 0){
-
+      if (this.emailCode && this.emailCode.length > 0) {
         this.submitCode({ // todo throttle to avoid multiple in same time
           code: this.emailCode
-        }).catch(error => this.errors.push(displayError(error)) );
-
+        }).catch(error => this.errors.push(displayError(error)));
       } else {
-
         this.errors.push('Code is required');
-
       }
 
       e.preventDefault();
-
     }
 
   }

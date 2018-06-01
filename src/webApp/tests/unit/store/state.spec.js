@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 
 import state from '@/store/state';
 
-describe('Store: state', function() {
+describe('Store: state', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.store = new Vuex.Store({

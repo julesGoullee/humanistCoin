@@ -6,7 +6,7 @@ import state from '@/store/state';
 import mutations from '@/store/mutations';
 import storeHumanist from '@/store/storeHumanist';
 
-describe('Store: mutations', function() {
+describe('Store: mutations', function () {
   beforeEach(() => {
     this.sandbox = createSandbox();
     this.state = cloneDeep(state);
@@ -32,7 +32,6 @@ describe('Store: mutations', function() {
   });
 
   it('Should create humanist', () => {
-
     mutations.createHumanist(this.state, { humanist: this.humanist });
 
     expect(this.state.humanist).to.eq('humanist');

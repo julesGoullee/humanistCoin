@@ -12,6 +12,7 @@
     "es6": true
   },
   "globals": {
+    "process": true
   },
   "rules": {
     "no-console": 0,

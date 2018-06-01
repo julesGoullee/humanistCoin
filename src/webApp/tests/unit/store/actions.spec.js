@@ -11,7 +11,7 @@ import config from '@/../../config';
 import storeHumanist from '@/store/storeHumanist';
 const moment = require('moment');
 
-describe('Store: actions', function() {
+describe('Store: actions', function () {
   before(() => {
     this.oldContractAddress = config.CONTRACT_ADDRESS;
     this.oldENV = config.ENV;
@@ -156,7 +156,6 @@ describe('Store: actions', function() {
         expect(this.stubCommit.args[0][0]).to.be.eq('submit');
         expect(this.stubDispatch.args[0][0]).to.be.eq('submitBC');
       });
-
     });
 
     describe('With verification', () => {
@@ -182,15 +181,11 @@ describe('Store: actions', function() {
           email: 'email',
           birthday: this.now
         });
-
       });
-
     });
-
   });
 
   describe('Submit oracle', () => {
-
     beforeEach(() => {
       this.now = moment();
       this.params = {
@@ -198,7 +193,6 @@ describe('Store: actions', function() {
         birthday: this.now
       };
       this.stubApiClientSubmission = this.sandbox.stub(ApiClient, 'submission');
-
     });
 
     it('Cannot submit oracle if submission already validate', async () => {
@@ -261,16 +255,13 @@ describe('Store: actions', function() {
         }
       };
       this.stubApiClientSubmission.rejects(Error('api error'));
-      await expect(actions.submitOracle(this.actionArgs, this.params) ).to.be.rejectedWith(Error, 'api error');
+      await expect(actions.submitOracle(this.actionArgs, this.params)).to.be.rejectedWith(Error, 'api error');
       expect(this.stubCommit.calledOnce).to.be.true;
       expect(this.stubCommit.args[0][0]).to.eq('createSubmission');
-
     });
-
   });
 
   describe('Submit code', () => {
-
     beforeEach(() => {
       this.params = { code: 'code' };
       this.now = moment();
@@ -317,7 +308,6 @@ describe('Store: actions', function() {
       expect(this.stubCommit.args[0][1].submission).to.deep.eq(stubSubmission);
 
       expect(this.stubDispatch.args[0][0]).to.eq('submitBC');
-
     });
 
     it('Should submit code with rejected', async () => {
@@ -331,7 +321,7 @@ describe('Store: actions', function() {
         id: 'id'
       };
       this.stubApiClientCallbackEmail.resolves(stubSubmission);
-      await expect(actions.submitCode(this.actionArgs, this.params) )
+      await expect(actions.submitCode(this.actionArgs, this.params))
         .to.be.rejectedWith(Error, 'invalid_submission_status');
 
       expect(this.stubCommit.args[0][0]).to.eq('submitOracle');
@@ -339,11 +329,9 @@ describe('Store: actions', function() {
 
       expect(this.stubCommit.args[1][0]).to.eq('createSubmission');
     });
-
   });
 
   describe('Submit blockchain', () => {
-
     beforeEach(() => {
       this.stubAddHumanist = this.sandbox.stub();
       this.stubListenHumanist = this.sandbox.stub();
@@ -395,7 +383,6 @@ describe('Store: actions', function() {
       expect(this.stubListenHumanist.calledOnce).to.be.true;
       expect(this.stubCommit.calledOnce).to.be.true;
       expect(this.stubCommit.args[0][0]).to.be.eq('createSubmission');
-
     });
     describe('Without verification', () => {
       beforeEach(() => {
@@ -435,7 +422,6 @@ describe('Store: actions', function() {
         expect(this.stubCommit.args[0][1].status).to.be.true;
         expect(this.stubDispatch.args[0][0]).to.be.eq('me');
       });
-
     });
 
     describe('With verification', () => {
@@ -476,7 +462,6 @@ describe('Store: actions', function() {
         expect(this.stubDispatch.args[0][0]).to.be.eq('watchValidation');
       });
     });
-
   });
 
   describe('Validate submission', () => {
@@ -564,7 +549,7 @@ describe('Store: actions', function() {
 
       await actions.watchValidation(this.actionArgs);
 
-      this.stubOnHumanist.args[0][1]({ status: true});
+      this.stubOnHumanist.args[0][1]({ status: true });
       expect(this.stubDispatch.args[0][0]).to.be.eq('validateSubmission');
       expect(this.stubDispatch.args[0][1].status).to.be.true;
     });
@@ -656,7 +641,8 @@ describe('Store: actions', function() {
       this.state.submission = { status: 'validate' };
 
       this.stubMeHumanist.resolves(null);
-      await expect(actions.me(this.actionArgs)).to.be.rejectedWith(Error, 'tx_failed_humanist_already_exist_or_unknown');
+      await expect(actions.me(this.actionArgs))
+        .to.be.rejectedWith(Error, 'tx_failed_humanist_already_exist_or_unknown');
       expect(this.stubCommit.args[0][0]).to.be.eq('createSubmission');
     });
   });
@@ -813,8 +799,8 @@ describe('Store: actions', function() {
       };
       this.state.me = {validate: true};
       this.stubTxHistoryHumanist.resolves([
-        { amount: '0.1'},
-        { amount: '0.2'}
+        { amount: '0.1' },
+        { amount: '0.2' }
       ]);
       await actions.txHistory(this.actionArgs);
       expect(this.stubCommit.callCount).to.eq(2);
@@ -851,7 +837,7 @@ describe('Store: actions', function() {
       actions.watchTx(this.actionArgs);
       expect(this.stubOnHumanist.calledOnce).to.be.true;
       expect(this.stubOnHumanist.args[0][0]).to.be.eq('tx');
-      this.stubOnHumanist.args[0][1]({ amount: '0.1'});
+      this.stubOnHumanist.args[0][1]({ amount: '0.1' });
       expect(this.stubCommit.calledOnce).to.be.true;
       expect(this.stubCommit.args[0][0]).to.be.eq('tx');
       expect(this.stubCommit.args[0][1].tx.amount).to.be.eq('0.1');

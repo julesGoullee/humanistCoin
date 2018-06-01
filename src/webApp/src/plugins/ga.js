@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import VueAnalytics from 'vue-analytics'
+import Vue from 'vue';
+import VueAnalytics from 'vue-analytics';
 import config from '@/../../config';
 import router from '@/router';
 
-if(config.GA_ID){
-
+if (config.GA_ID) {
   Vue.use(VueAnalytics, {
     id: config.GA_ID,
     router,
@@ -15,5 +14,4 @@ if(config.GA_ID){
       sendHitTask: config.ENV === 'production'
     }
   });
-
 }

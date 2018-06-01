@@ -1,6 +1,4 @@
 import assert from 'assert';
-
-const moment = require('moment');
 import ApiClient from '@/../../apiClient';
 import EthWallet from '@/../../ethWallet';
 import Humanist from '@/../../humanist';
@@ -8,6 +6,8 @@ import config from '@/../../config';
 import storeHumanist from '@/store/storeHumanist';
 import Errors from '@/../../utils/errors';
 import ethers from 'ethers';
+
+const moment = require('moment');
 
 const actions = {
 
@@ -73,11 +73,8 @@ const actions = {
     });
 
     if (config.RUN.VERIFY) {
-
       await dispatch('submitOracle', { email, birthday });
-
     } else {
-
       commit('submitOracle', {
         submission: {
           email,
@@ -98,9 +95,7 @@ const actions = {
       });
 
       await dispatch('submitBC');
-
     }
-
   },
   submitOracle: async ({ state, commit, dispatch }, { email, birthday }) => {
     assert(state.submission && state.submission.status === 'submit', 'existing_submission');
@@ -113,7 +108,6 @@ const actions = {
     };
 
     try {
-
       const submission = await ApiClient.submission(content, storeHumanist.data[state.humanist].ethWallet.data.address);
       commit('submitOracle', {
         submission: Object.assign({}, content, submission),
@@ -128,9 +122,7 @@ const actions = {
           ]
         }
       });
-
     } catch (error) {
-
       commit('createSubmission', {
         meta: {
           analytics: [
@@ -145,9 +137,7 @@ const actions = {
       });
 
       throw error;
-
     }
-
   },
   submitCode: async ({ state, commit, dispatch }, { code }) => {
     assert(state.submission && state.submission.status === 'PENDING', 'unknown_submission');
@@ -170,12 +160,9 @@ const actions = {
       }
     });
 
-    if(submission.status === 'CONFIRMED'){
-
+    if (submission.status === 'CONFIRMED') {
       await dispatch('submitBC');
-
-    } else if(submission.status === 'REJECTED'){
-
+    } else if (submission.status === 'REJECTED') {
       commit('createSubmission', {
         meta: {
           analytics: [
@@ -189,9 +176,7 @@ const actions = {
         }
       });
       Errors.throwError('invalid_submission_status', submission.status, true);
-
     }
-
   },
   submitBC: async ({ state, commit, dispatch }) => {
     assert(state.submission && state.submission.status === 'CONFIRMED', 'invalid_submission');
@@ -208,7 +193,7 @@ const actions = {
       id: state.submission.id
     });
 
-    if(!res){
+    if (!res) {
       commit('createSubmission', {
         meta: {
           analytics: [
@@ -244,7 +229,7 @@ const actions = {
   validateSubmission: async ({ state, commit, dispatch }, result) => {
     assert(storeHumanist.data[state.humanist], 'unknown_humanist');
     assert(!state.me || !state.me.validate, 'humanist_already_validate');
-    commit('validateSubmission',  {
+    commit('validateSubmission', {
       status: result.status,
       meta: {
         analytics: [
@@ -370,7 +355,7 @@ const actions = {
             eventCategory: 'balance',
             eventAction: 'balance',
             eventLabel: 'balance',
-            eventValue: parseInt(ethers.utils.parseEther(balance).toString() )
+            eventValue: parseInt(ethers.utils.parseEther(balance).toString())
           }]
         ]
       }
@@ -389,7 +374,7 @@ const actions = {
               eventCategory: 'balance',
               eventAction: 'balance',
               eventLabel: 'balance',
-              eventValue: parseInt(ethers.utils.parseEther(balance).toString() )
+              eventValue: parseInt(ethers.utils.parseEther(balance).toString())
             }]
           ]
         }
@@ -409,11 +394,11 @@ const actions = {
             eventCategory: 'balance',
             eventAction: 'balance',
             eventLabel: 'balance',
-            eventValue: parseInt(ethers.utils.parseEther(tx.amount).toString() )
+            eventValue: parseInt(ethers.utils.parseEther(tx.amount).toString())
           }]
         ]
       }
-    }) );
+    }));
   },
   watchTx: ({ state, commit }) => {
     assert(storeHumanist.data[state.humanist], 'unknown_humanist');
@@ -428,7 +413,7 @@ const actions = {
               eventCategory: 'balance',
               eventAction: 'balance',
               eventLabel: 'balance',
-              eventValue: parseInt(ethers.utils.parseEther(tx.amount).toString() )
+              eventValue: parseInt(ethers.utils.parseEther(tx.amount).toString())
             }]
           ]
         }

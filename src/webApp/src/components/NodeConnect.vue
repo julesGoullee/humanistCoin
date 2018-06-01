@@ -31,7 +31,9 @@ export default {
   mounted: async function () {
     if (!this.nodeConnected && !this.errorConnection) {
       await this.nodeConnect()
-        .catch(error => this.errorConnection = displayError(error) );
+        .catch(error => {
+          this.errorConnection = displayError(error);
+        });
     }
   }
 };
