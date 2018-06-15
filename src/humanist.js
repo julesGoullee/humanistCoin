@@ -252,9 +252,9 @@ class Humanist extends EventEmitter{
 
     assert(this.ethWallet.constructor.isValidAmount(value), 'invalid_amount');
     assert(this.ethWallet.constructor.isValidAddress(address), 'invalid_address');
-    assert(await this._haveEthAmount('0.001'), 'insufficient_fund_eth' );
-    assert(await this._haveAmount(value), 'insufficient_fund' );
-    assert(await this.exist(address), 'receiver_unknown' );
+    assert(await this._haveEthAmount('0.001'), 'insufficient_fund_eth');
+    assert(await this._haveAmount(value), 'insufficient_fund');
+    assert(await this.exist(address), 'receiver_unknown');
 
     try {
 
